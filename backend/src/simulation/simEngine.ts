@@ -314,7 +314,7 @@ export class SimulationEngine {
 
       this.broadcastState();
 
-      // Auto-approve after 5 seconds to guarantee demo progression
+      // Auto-approve after 60 seconds to guarantee demo progression if left idle
       setTimeout(() => {
         const currentEvent = this.events.find(e => e.id === newEvent.id);
         if (currentEvent && !currentEvent.resolved && currentEvent.currentPhase === 'playbook_generated') {
@@ -323,7 +323,7 @@ export class SimulationEngine {
             this.executePlaybookStep(currentEvent.id, step.id);
           });
         }
-      }, 5000);
+      }, 60000);
     } catch (err: any) {
       this.logEvent('ERROR', 'triggerScenario', `Playbook generation failed: ${err.message}`);
     }
@@ -387,7 +387,7 @@ export class SimulationEngine {
           this.addTimelineItem(`AI Prediction: ${zone?.name || zoneId}`, 'warning', zoneId, 'Brain');
           this.broadcastState();
 
-          // Auto-approve after 5 seconds
+          // Auto-approve after 60 seconds
           setTimeout(() => {
             const currentEvent = this.events.find(e => e.id === event.id);
             if (currentEvent && !currentEvent.resolved && currentEvent.currentPhase === 'playbook_generated') {
@@ -396,7 +396,7 @@ export class SimulationEngine {
                 this.executePlaybookStep(currentEvent.id, step.id);
               });
             }
-          }, 5000);
+          }, 60000);
         } catch (err: any) {
           this.logEvent('ERROR', 'tick', `Playbook trigger failed for tick: ${err.message}`);
         }

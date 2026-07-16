@@ -2,19 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import NavigationSidebar from './components/NavigationSidebar';
-import Footer from './components/Footer';
 import { SocketProvider } from './context/SocketContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Import Pages
 import LandingPage from './pages/LandingPage';
 import Overview from './pages/Overview';
-import DigitalTwin from './pages/DigitalTwin';
-import AICopilot from './pages/AICopilot';
-import ExecutiveAnalytics from './pages/ExecutiveAnalytics';
-import IncidentCenter from './pages/IncidentCenter';
 import ScenarioSimulator from './pages/ScenarioSimulator';
-import Settings from './pages/Settings';
+import ExecutiveAnalytics from './pages/ExecutiveAnalytics';
 
 function AppContent() {
   const [loadingStep, setLoadingStep] = useState(0);
@@ -124,17 +119,10 @@ function AppContent() {
           <div className="ml-20 pt-16 h-full overflow-y-auto scrollbar-thin relative z-10">
             <Routes>
               <Route path="/dashboard" element={<Overview />} />
-              <Route path="/twin" element={<DigitalTwin />} />
-              <Route path="/copilot" element={<AICopilot />} />
-              <Route path="/analytics" element={<ExecutiveAnalytics />} />
-              <Route path="/incidents" element={<IncidentCenter />} />
               <Route path="/scenarios" element={<ScenarioSimulator />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/analytics" element={<ExecutiveAnalytics />} />
             </Routes>
           </div>
-
-          {/* Mobile Bottom Nav Footer */}
-          <Footer />
         </motion.div>
       )}
     </AnimatePresence>
