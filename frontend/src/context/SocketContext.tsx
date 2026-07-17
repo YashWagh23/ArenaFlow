@@ -16,11 +16,14 @@ interface SocketContextType {
   scrubSim: (minute: number) => void;
   executeStep: (eventId: string, stepId: string) => void;
   triggerScenario: (scenarioId: string) => void;
+  connectionError: boolean;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const WS_URL = (import.meta as any).env.VITE_WS_URL || 'http://localhost:5000';
+const isDev = (import.meta as any).env.DEV;
+const API_URL = (import.meta as any).env.VITE_API_URL ?? (isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app');
+const SOCKET_URL = (import.meta as any).env.VITE_SOCKET_URL ?? (isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app');
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -30,15 +33,28 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
+  const [connectionError, setConnectionError] = useState(false);
 
   useEffect(() => {
-    const newSocket = io(WS_URL, {
+    const newSocket = io(SOCKET_URL, {
       transports: ['websocket'],
+      reconnectionAttempts: 3,
+      timeout: 5000,
     });
 
     setSocket(newSocket);
 
-    newSocket.on('connect', () => {});
+    newSocket.on('connect', () => {
+      setConnectionError(false);
+    });
+
+    newSocket.on('connect_error', () => {
+      setConnectionError(true);
+    });
+
+    newSocket.on('reconnect_failed', () => {
+      setConnectionError(true);
+    });
 
     newSocket.on('telemetry_tick', (data: { 
       state: StadiumState; 
@@ -52,6 +68,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setIsPlaying(data.isPlaying);
       if (data.analytics) setAnalytics(data.analytics);
       if (data.timeline) setTimeline(data.timeline);
+      setConnectionError(false);
     });
 
     newSocket.on('incident_added', (item: TimelineItem) => {
@@ -109,6 +126,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         scrubSim,
         executeStep,
         triggerScenario,
+        connectionError,
       }}
     >
       {children}

@@ -105,7 +105,7 @@ const getScenarioDetails = (eventId: string) => {
 };
 
 export default function Overview() {
-  const { state, analytics, events, timeline, isPlaying, setPlaying, scrubSim, executeStep } = useTelemetry();
+  const { state, analytics, events, timeline, isPlaying, setPlaying, scrubSim, executeStep, connectionError } = useTelemetry();
   const [clock, setClock] = useState('');
   const [executingEventId, setExecutingEventId] = useState<string | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
@@ -151,6 +151,25 @@ export default function Overview() {
     setCurrentStepIndex(steps.length);
     setIsComplete(true);
   };
+
+  if (connectionError && (!state || !analytics)) {
+    return (
+      <div className="flex-1 flex items-center justify-center h-[calc(100vh-64px)]">
+        <div className="text-center space-y-6 max-w-sm px-6 py-8 glass-card rounded-3xl border border-error-container/30">
+          <span className="material-symbols-outlined text-critical-red text-5xl">cloud_off</span>
+          <div className="space-y-1.5">
+            <h3 className="font-title-md text-title-md font-bold text-slate-900">Telemetry Backend Offline</h3>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              The live stadium telemetry server is currently unreachable. Make sure the backend service is deployed and running at:
+            </p>
+            <code className="block text-[10px] bg-slate-100 p-2.5 rounded-xl font-mono break-all select-all">
+              https://arena-flow-backend.vercel.app
+            </code>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!state || !analytics) {
     return (

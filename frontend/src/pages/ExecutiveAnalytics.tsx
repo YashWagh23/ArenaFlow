@@ -2,7 +2,26 @@ import React from 'react';
 import { useTelemetry } from '../context/SocketContext';
 
 export default function ExecutiveAnalytics() {
-  const { state, analytics } = useTelemetry();
+  const { state, analytics, connectionError } = useTelemetry();
+
+  if (connectionError && (!state || !analytics)) {
+    return (
+      <div className="flex-grow flex items-center justify-center h-[calc(100vh-64px)]">
+        <div className="text-center space-y-6 max-w-sm px-6 py-8 glass-card rounded-3xl border border-error-container/30">
+          <span className="material-symbols-outlined text-critical-red text-5xl">cloud_off</span>
+          <div className="space-y-1.5">
+            <h3 className="font-title-md text-title-md font-bold text-slate-900">Analytics Offline</h3>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              The live stadium telemetry server is currently unreachable. Make sure the backend service is deployed and running at:
+            </p>
+            <code className="block text-[10px] bg-slate-100 p-2.5 rounded-xl font-mono break-all select-all">
+              https://arena-flow-backend.vercel.app
+            </code>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!state || !analytics) {
     return (
