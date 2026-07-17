@@ -21,9 +21,33 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const isDev = (import.meta as any).env.DEV;
-const API_URL = (import.meta as any).env.VITE_API_URL ?? (isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app');
-const SOCKET_URL = (import.meta as any).env.VITE_SOCKET_URL ?? (isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app');
+const isDev = import.meta.env.DEV;
+
+// Resolve and sanitize environment variables from contamination (e.g. vite_socket_urlhttps://...)
+const sanitizeUrl = (url: string | undefined, fallback: string): string => {
+  if (!url) return fallback;
+  let clean = url.trim();
+  if (clean.startsWith('VITE_SOCKET_URL')) {
+    clean = clean.substring('VITE_SOCKET_URL'.length);
+  } else if (clean.startsWith('vite_socket_url')) {
+    clean = clean.substring('vite_socket_url'.length);
+  } else if (clean.startsWith('VITE_API_URL')) {
+    clean = clean.substring('VITE_API_URL'.length);
+  } else if (clean.startsWith('vite_api_url')) {
+    clean = clean.substring('vite_api_url'.length);
+  }
+  return clean;
+};
+
+const API_URL = sanitizeUrl(
+  import.meta.env.VITE_API_URL,
+  isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app'
+);
+
+const SOCKET_URL = sanitizeUrl(
+  import.meta.env.VITE_SOCKET_URL,
+  isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app'
+);
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -36,6 +60,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [connectionError, setConnectionError] = useState(false);
 
   useEffect(() => {
+    console.log('[ArenaFlow Telemetry] Resolved SOCKET_URL:', SOCKET_URL);
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket'],
       reconnectionAttempts: 3,
