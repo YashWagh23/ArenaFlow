@@ -92,7 +92,7 @@ export default function StadiumMap() {
   // Status colors based on Heatmap Mode and Telemetry Mode
   const getStatusColors = (zone: typeof zones[0]) => {
     if (!heatmapActive) {
-      return 'fill-slate-50 stroke-slate-350 hover:fill-slate-100';
+      return 'fill-slate-50 stroke-slate-300 hover:fill-slate-100';
     }
 
     // If wait time mode is active, color scale by wait time
@@ -123,17 +123,17 @@ export default function StadiumMap() {
       <div className="absolute top-6 left-6 flex gap-2 z-20 pointer-events-auto">
         <button
           onClick={() => setHeatmapActive(prev => !prev)}
-          className={`glass-card px-4 py-2 rounded-full font-label-caps text-label-caps border transition-all ${
+          className={`glass-card px-4 py-2 rounded-full font-label-caps text-label-caps border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
             heatmapActive
-              ? 'text-primary border-primary/20 bg-white/95 shadow-sm'
-              : 'text-on-surface-variant border-outline/10 bg-white/70'
+              ? 'text-primary border-primary/20 bg-white/95 shadow-sm hover:border-primary/40'
+              : 'text-on-surface-variant border-outline/10 bg-white/70 hover:text-primary hover:border-outline/30'
           }`}
         >
           HEATMAP: {heatmapActive ? 'ON' : 'OFF'}
         </button>
         <button
           onClick={() => setTelemetryMode(prev => prev === 'crowd' ? 'wait' : 'crowd')}
-          className="glass-card px-4 py-2 rounded-full font-label-caps text-label-caps text-on-surface-variant bg-white/95 border border-outline/10 shadow-sm hover:text-primary transition-colors"
+          className="glass-card px-4 py-2 rounded-full font-label-caps text-label-caps text-on-surface-variant bg-white/95 border border-outline/10 shadow-sm hover:text-primary hover:border-outline/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           MODE: {telemetryMode === 'crowd' ? 'CROWD LOAD' : 'WAIT TIME'}
         </button>
@@ -143,13 +143,13 @@ export default function StadiumMap() {
       <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-20 pointer-events-auto">
         <button
           onClick={handleZoomIn}
-          className="glass-card w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary transition-all border border-outline/10 shadow-md bg-white"
+          className="glass-card w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary transition-all border border-outline/10 shadow-md bg-white hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <span className="material-symbols-outlined">add</span>
         </button>
         <button
           onClick={handleZoomOut}
-          className="glass-card w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary transition-all border border-outline/10 shadow-md bg-white"
+          className="glass-card w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary transition-all border border-outline/10 shadow-md bg-white hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <span className="material-symbols-outlined">remove</span>
         </button>
@@ -419,7 +419,7 @@ export default function StadiumMap() {
               </button>
             </div>
 
-            <h4 className="text-xs font-bold text-slate-955 mb-4">{selectedZone.name}</h4>
+            <h4 className="text-xs font-bold text-slate-950 mb-4">{selectedZone.name}</h4>
 
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col">

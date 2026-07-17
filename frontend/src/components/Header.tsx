@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useTelemetry } from '../context/SocketContext';
 
 export default function Header() {
   const { state } = useTelemetry();
   const [clock, setClock] = useState('');
-  const location = useLocation();
 
   // Live UTC clock
   useEffect(() => {
@@ -73,15 +72,6 @@ export default function Header() {
         <div className="glass-card px-4 py-2 rounded-xl flex items-center gap-2">
           <span className="font-label-caps text-on-surface-variant text-[11px]">UTC</span>
           <span className="font-stats-numeric text-on-surface text-[14px]">{clock}</span>
-        </div>
-
-        {/* Avatar */}
-        <div className="h-8 w-8 rounded-full bg-surface-container-high border border-outline/20 overflow-hidden shrink-0">
-          <img
-            className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI8dGtXx6eQz8dCEMxHqxcptd-Ets5JLBsZaPNjgBIm4sDVLvdjWJKB2BQjEBoZUv0kocYgfkht6z4A2VfRRDXgoar6SA6WKH8BvAtGkcoSm8TngN9DPX3BWH2DhDWhAKpXH5NdH2aKuHxiXks2SlNKz1xp6JUkvcPyUcLIG7MsfcUVLuEgW5ezPGpYNrvVV-eL1jhMVgpJuHZqy6osDmBNiDLHeVrbOvm7Pmvp5TXVCRF_QUfZQZJkQ"
-            alt="FIFA Admin"
-          />
         </div>
       </div>
     </header>

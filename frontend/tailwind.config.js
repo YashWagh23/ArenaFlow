@@ -56,7 +56,6 @@ export default {
         "on-primary-fixed-variant": "#00522f",
         "on-error": "#ffffff",
         "inverse-surface": "#2f3132",
-        "slate": "#424245",
         "surface-bright": "#f9f9fb",
         "primary-container": "#008751",
         "on-secondary": "#ffffff",

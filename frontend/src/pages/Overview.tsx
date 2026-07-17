@@ -255,7 +255,7 @@ export default function Overview() {
             <button
               onClick={() => setPlaying(!isPlaying)}
               aria-label="Simulation playback play pause toggle button"
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-950 hover:bg-slate-800 text-white transition shadow-sm shrink-0"
+              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-950 hover:bg-slate-800 text-white transition shadow-sm shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {isPlaying ? (
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>pause</span>
@@ -411,8 +411,8 @@ export default function Overview() {
                     <span className="material-symbols-outlined text-primary text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                     <div>
                       <p className="text-sm font-bold text-slate-900">System Nominal</p>
-                      <p className="text-xs text-slate-400 mt-1">No operational risks detected.</p>
-                      <p className="text-xs text-slate-500 mt-1">Monitoring all stadium zones.</p>
+                      <p className="text-xs text-slate-400 mt-1">Monitoring Stadium Operations</p>
+                      <p className="text-xs text-slate-500 mt-1">All systems operating normally.</p>
                       <p className="text-[10px] text-primary font-mono uppercase tracking-wider mt-4">Telemetry link: GREEN</p>
                     </div>
                   </motion.div>
@@ -430,7 +430,7 @@ export default function Overview() {
                 ) : (
                   <button
                     onClick={handleAuthorize}
-                    className="w-full py-3.5 bg-primary text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all"
+                    className="w-full py-3.5 bg-primary text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
                     Approve & Deploy Playbook
                   </button>

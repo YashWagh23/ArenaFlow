@@ -7,6 +7,20 @@ export default function LandingPage() {
   const trophyRef = useRef<HTMLImageElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [utcClock, setUtcClock] = useState('');
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const h = String(now.getUTCHours()).padStart(2, '0');
+      const m = String(now.getUTCMinutes()).padStart(2, '0');
+      const s = String(now.getUTCSeconds()).padStart(2, '0');
+      setUtcClock(`${h}:${m}:${s} UTC`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -47,7 +61,7 @@ export default function LandingPage() {
         className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 border-b border-white/30 shadow-sm"
         style={{ background: 'rgba(249,249,251,0.80)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
       >
-        {/* Left: Logo + Links */}
+        {/* Left: Logo + Home */}
         <div className="flex items-center gap-8">
           <span className="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">
             ArenaFlow
@@ -59,43 +73,13 @@ export default function LandingPage() {
             >
               Home
             </a>
-            <a
-              href="#"
-              className="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm"
-            >
-              Platform
-            </a>
-            <a
-              href="#"
-              className="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm"
-            >
-              Venues
-            </a>
-            <a
-              href="#"
-              className="text-on-surface-variant font-medium hover:text-primary transition-colors text-sm"
-            >
-              Security
-            </a>
           </div>
         </div>
 
-        {/* Right: Icon buttons + clock */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-full hover:bg-white/20 transition-colors active:scale-90 duration-200">
-              <span className="material-symbols-outlined text-primary">notifications</span>
-            </button>
-            <button className="p-2 rounded-full hover:bg-white/20 transition-colors active:scale-90 duration-200">
-              <span className="material-symbols-outlined text-primary">emergency_home</span>
-            </button>
-            <button className="p-2 rounded-full hover:bg-white/20 transition-colors active:scale-90 duration-200">
-              <span className="material-symbols-outlined text-primary">account_circle</span>
-            </button>
-          </div>
-          <div className="h-6 w-px bg-outline-variant mx-2" />
+        {/* Right: Live UTC Clock */}
+        <div className="flex items-center gap-3">
           <span className="font-stats-numeric text-primary" style={{ fontSize: '14px' }}>
-            09:42:00 UTC
+            {utcClock}
           </span>
         </div>
       </nav>
@@ -340,7 +324,7 @@ export default function LandingPage() {
                       key={idx}
                       onClick={() => setActiveStep(idx)}
                       className={`h-2 rounded-full transition-all duration-300 ${
-                        idx === activeStep ? 'w-6 bg-primary' : 'w-2 bg-slate-200 hover:bg-slate-350'
+                        idx === activeStep ? 'w-6 bg-primary' : 'w-2 bg-slate-200 hover:bg-slate-300'
                       }`}
                     />
                   ))}

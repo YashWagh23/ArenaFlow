@@ -38,9 +38,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
     setSocket(newSocket);
 
-    newSocket.on('connect', () => {
-      console.log('Telemetry link active:', newSocket.id);
-    });
+    newSocket.on('connect', () => {});
 
     newSocket.on('telemetry_tick', (data: { 
       state: StadiumState; 

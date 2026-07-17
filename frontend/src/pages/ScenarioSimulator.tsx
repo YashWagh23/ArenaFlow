@@ -86,7 +86,7 @@ export default function ScenarioSimulator() {
 
               <button
                 onClick={() => handleTrigger(scen.id)}
-                className="w-full mt-4 py-2 bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all"
+                className="w-full mt-4 py-2 bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 Trigger Scenario
               </button>
