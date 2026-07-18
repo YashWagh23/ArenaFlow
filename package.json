@@ -10,6 +10,12 @@
   "scripts": {
     "build": "npm run build --workspace=frontend && node -e \"const fs = require('fs'); fs.rmSync('dist', { recursive: true, force: true }); fs.cpSync('frontend/dist', 'dist', { recursive: true });\"",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend"
+    "dev:backend": "npm run dev --workspace=backend",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
   }
 }
