@@ -97,7 +97,7 @@ export default function LandingPage() {
             <img
               ref={trophyRef}
               alt="FIFA World Cup Trophy Monumental Detail"
-              src="https://lh3.googleusercontent.com/aida/AP1WRLuhdvK2pdrppNdcLMsLnsiJmjKEbBf32biWWvk9gRfLZwjNXMbtnM4N1rZT2De69qcrHC1hzye3knQ98nl_lV9ORBvYp36mfdWSjQ3SeHt0hWIJPHHH92eeIBT2jYwveTz7nxRGF_atNrH9uJdv3OfB4YTGAmwADHElhx7mpDZqBuLP5psF8L1pKkIXMEadq400CX-uf27NRAUuqw-_XGBrOKoBiVAaQEvRjkWoNWigWe5Cl6TbtywwOJ_4"
+              src="/trophy.png"
               className="absolute right-0 top-1/2 w-auto object-contain mix-blend-multiply transition-all duration-1000 hover:scale-105"
               style={{
                 height: '120%',
