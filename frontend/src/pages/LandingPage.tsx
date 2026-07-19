@@ -216,12 +216,10 @@ export default function LandingPage() {
       <nav
         className="fixed top-0 left-0 w-full z-50 flex justify-between items-center"
         style={{
-          height: '52px',
+          height: '60px',
           padding: '0 40px',
-          background: 'rgba(8,12,10,0.70)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(0,0,0,0.05)',
+          background: '#FFFFFF',
+          borderBottom: '1px solid #E7E6DF',
         }}
       >
         {/* Wordmark */}
@@ -243,7 +241,7 @@ export default function LandingPage() {
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#2E7D32' }} />
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, color: 'rgba(0,0,0,0.35)', letterSpacing: '0.06em' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, color: '#7A7A7A', letterSpacing: '0.06em' }}>
               {utcClock}
             </span>
           </div>
@@ -253,7 +251,7 @@ export default function LandingPage() {
               fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
               fontSize: '12px',
               fontWeight: 600,
-              color: 'rgba(0,0,0,0.50)',
+              color: '#7A7A7A',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
@@ -267,7 +265,7 @@ export default function LandingPage() {
               (e.currentTarget as HTMLButtonElement).style.background = 'rgba(0,0,0,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'rgba(0,0,0,0.50)';
+              (e.currentTarget as HTMLButtonElement).style.color = '#7A7A7A';
               (e.currentTarget as HTMLButtonElement).style.background = 'none';
             }}
           >
