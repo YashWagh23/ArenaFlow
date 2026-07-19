@@ -13,9 +13,9 @@ const scenariosList = [
     severity: 'critical' as const,
     zones: 'East Gates · Transit Hub',
     eta: '3 min response',
-    accentColor: '#F87171',
-    accentDim: 'rgba(248,113,113,0.12)',
-    accentBorder: 'rgba(248,113,113,0.20)',
+    accentColor: '#C84A4A',
+    accentDim: 'rgba(200,74,74,0.12)',
+    accentBorder: 'rgba(200,74,74,0.20)',
   },
   {
     id: 'gate-scanner-failure',
@@ -49,9 +49,9 @@ const scenariosList = [
     severity: 'warning' as const,
     zones: 'Outer Concourse · Parking',
     eta: '4 min response',
-    accentColor: '#FACC15',
-    accentDim: 'rgba(250,204,21,0.12)',
-    accentBorder: 'rgba(250,204,21,0.20)',
+    accentColor: '#C48A00',
+    accentDim: 'rgba(196,138,0,0.12)',
+    accentBorder: 'rgba(196,138,0,0.20)',
   },
   {
     id: 'match-end',
@@ -61,9 +61,9 @@ const scenariosList = [
     severity: 'warning' as const,
     zones: 'All Gates · Transit Hub',
     eta: '6 min response',
-    accentColor: '#E9B3FB',
-    accentDim: 'rgba(233,179,251,0.10)',
-    accentBorder: 'rgba(233,179,251,0.18)',
+    accentColor: '#6BCB6E',
+    accentDim: 'rgba(107,203,110,0.10)',
+    accentBorder: 'rgba(107,203,110,0.18)',
   },
 ];
 
@@ -81,7 +81,7 @@ export default function ScenarioSimulator() {
     <div
       style={{
         minHeight: 'calc(100vh - 48px)',
-        background: '#0F061A',
+        background: '#F7F6F1',
         padding: '40px 40px 64px',
       }}
     >
@@ -96,7 +96,7 @@ export default function ScenarioSimulator() {
               fontWeight: 700,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: '#6F00FF',
+              color: '#2E7D32',
               display: 'block',
               marginBottom: '14px',
             }}
@@ -109,19 +109,19 @@ export default function ScenarioSimulator() {
               fontWeight: 900,
               fontSize: 'clamp(40px, 5vw, 72px)',
               letterSpacing: '-0.05em',
-              color: '#FFFFFF',
+              color: '#1C1C1C',
               lineHeight: 0.95,
               marginBottom: '20px',
             }}
           >
             Scenario<br />
-            <span style={{ color: 'rgba(255,255,255,0.40)' }}>Simulator</span>
+            <span style={{ color: 'rgba(28,28,28,0.40)' }}>Simulator</span>
           </h1>
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: '16px',
-              color: 'rgba(255,255,255,0.45)',
+              color: 'rgba(28,28,28,0.45)',
               lineHeight: 1.7,
               maxWidth: '520px',
             }}
@@ -147,8 +147,8 @@ export default function ScenarioSimulator() {
               transition={{ duration: 0.35, delay: i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="glass-card"
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: `1px solid rgba(255,255,255,0.07)`,
+                background: 'rgba(0,0,0,0.03)',
+                border: `1px solid rgba(0,0,0,0.07)`,
                 borderLeft: `3px solid ${scen.accentColor}`,
                 borderRadius: '16px',
                 overflow: 'hidden',
@@ -160,15 +160,15 @@ export default function ScenarioSimulator() {
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLDivElement;
                 el.style.transform = 'translateY(-4px)';
-                el.style.background = 'rgba(255,255,255,0.05)';
-                el.style.borderColor = 'rgba(255,255,255,0.12)';
+                el.style.background = 'rgba(0,0,0,0.05)';
+                el.style.borderColor = 'rgba(0,0,0,0.12)';
                 el.style.boxShadow = `0 16px 48px rgba(0,0,0,0.50), 0 0 0 1px ${scen.accentBorder}`;
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLDivElement;
                 el.style.transform = 'translateY(0)';
-                el.style.background = 'rgba(255,255,255,0.03)';
-                el.style.borderColor = 'rgba(255,255,255,0.07)';
+                el.style.background = 'rgba(0,0,0,0.03)';
+                el.style.borderColor = 'rgba(0,0,0,0.07)';
                 el.style.boxShadow = 'none';
               }}
             >
@@ -223,7 +223,7 @@ export default function ScenarioSimulator() {
                     fontWeight: 800,
                     fontSize: '20px',
                     letterSpacing: '-0.025em',
-                    color: '#FFFFFF',
+                    color: '#1C1C1C',
                     marginBottom: '10px',
                     lineHeight: 1.15,
                   }}
@@ -236,7 +236,7 @@ export default function ScenarioSimulator() {
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: '13px',
-                    color: 'rgba(255,255,255,0.45)',
+                    color: 'rgba(28,28,28,0.45)',
                     lineHeight: 1.65,
                     marginBottom: '18px',
                   }}
@@ -247,19 +247,19 @@ export default function ScenarioSimulator() {
                 {/* Meta row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>location_on</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.30)', letterSpacing: '0.04em' }}>{scen.zones}</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: '11px', color: 'rgba(0,0,0,0.25)' }}>location_on</span>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(0,0,0,0.30)', letterSpacing: '0.04em' }}>{scen.zones}</span>
                   </div>
-                  <span style={{ color: 'rgba(255,255,255,0.10)', fontSize: '10px' }}>·</span>
+                  <span style={{ color: 'rgba(0,0,0,0.10)', fontSize: '10px' }}>·</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>timer</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.30)', letterSpacing: '0.04em' }}>{scen.eta}</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: '11px', color: 'rgba(0,0,0,0.25)' }}>timer</span>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(0,0,0,0.30)', letterSpacing: '0.04em' }}>{scen.eta}</span>
                   </div>
                 </div>
               </div>
 
               {/* Divider */}
-              <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)' }} />
+              <div style={{ height: '1px', background: 'rgba(0,0,0,0.05)' }} />
 
               {/* Trigger button */}
               <div style={{ padding: '16px 28px' }}>
