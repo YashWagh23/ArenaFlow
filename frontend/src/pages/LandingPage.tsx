@@ -115,16 +115,7 @@ export default function LandingPage() {
 
         <div className="relative z-20 flex flex-col items-center px-6 mt-16" style={{ maxWidth: '800px' }}>
 
-          {/* Huge Logo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="w-20 h-20 rounded-[20px] mb-8 flex items-center justify-center border border-[rgba(0,0,0,0.04)]" 
-            style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 20px 40px rgba(46,125,50,0.15)' }}
-          >
-            <span className="material-symbols-outlined text-[40px] text-[#F9F9F7]" style={{ fontVariationSettings: "'FILL' 1" }}>stadium</span>
-          </motion.div>
+
 
           {/* Eyebrow */}
           <motion.div
