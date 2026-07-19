@@ -25,13 +25,11 @@ export default function Header() {
     <header
       className="fixed top-0 left-0 w-full z-50 flex justify-between items-center select-none"
       style={{
-        height: '48px',
+        height: '60px',
         paddingLeft: '64px',
         paddingRight: '24px',
-        background: 'rgba(8,12,10,0.85)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(0,0,0,0.05)',
+        background: '#FFFFFF',
+        borderBottom: '1px solid #E7E6DF',
       }}
     >
       {/* Left: Wordmark */}
@@ -81,10 +79,10 @@ export default function Header() {
         <span
           style={{
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '9px',
+            fontSize: '10px',
             fontWeight: 600,
             letterSpacing: '0.10em',
-            color: 'rgba(0,0,0,0.30)',
+            color: '#7A7A7A',
             textTransform: 'uppercase',
           }}
         >
@@ -122,15 +120,22 @@ export default function Header() {
 
         {/* System status — nominal indicator */}
         {state && activeIncidentsCount === 0 && (
-          <div className="flex items-center gap-1.5">
+          <div 
+            className="flex items-center gap-1.5"
+            style={{
+              background: '#EAF7EA',
+              padding: '4px 10px',
+              borderRadius: '999px',
+            }}
+          >
             <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#2E7D32' }} />
             <span
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '9px',
-                fontWeight: 600,
+                fontWeight: 700,
                 letterSpacing: '0.08em',
-                color: 'rgba(46,125,50,0.70)',
+                color: '#2E7D32',
                 textTransform: 'uppercase',
               }}
             >

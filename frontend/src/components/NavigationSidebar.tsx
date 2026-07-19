@@ -10,13 +10,11 @@ const navItems = [
 export default function NavigationSidebar() {
   return (
     <aside
-      className="fixed left-0 top-12 bottom-0 z-40 flex flex-col select-none"
+      className="fixed left-0 top-[60px] bottom-0 z-40 flex flex-col select-none"
       style={{
         width: '48px',
-        background: 'rgba(8,12,10,0.60)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(0,0,0,0.05)',
+        background: '#FFFFFF',
+        borderRight: '1px solid #E7E6DF',
       }}
     >
       {/* Nav rail */}
@@ -30,51 +28,34 @@ export default function NavigationSidebar() {
             style={({ isActive }) => ({
               width: '40px',
               height: '40px',
-              borderRadius: '10px',
-              background: isActive ? 'rgba(46,125,50,0.08)' : 'transparent',
-              color: isActive ? '#2E7D32' : 'rgba(0,0,0,0.30)',
+              borderRadius: '999px',
+              background: isActive ? '#2E7D32' : 'transparent',
+              color: isActive ? '#FFFFFF' : '#7A7A7A',
               transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               textDecoration: 'none',
             })}
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLAnchorElement;
-              if (!el.classList.contains('active')) {
-                el.style.color = 'rgba(0,0,0,0.70)';
-                el.style.background = 'rgba(0,0,0,0.05)';
+              if (!el.getAttribute('aria-current')) {
+                el.style.color = '#555555';
+                el.style.background = 'rgba(46,125,50,0.08)';
               }
             }}
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLAnchorElement;
-              // Reset only if not active — active state is controlled by NavLink
               if (!el.getAttribute('aria-current')) {
-                el.style.color = 'rgba(0,0,0,0.30)';
+                el.style.color = '#7A7A7A';
                 el.style.background = 'transparent';
               }
             }}
           >
             {({ isActive }) => (
               <>
-                {/* Active left-edge indicator */}
-                {isActive && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      left: '-1px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '2px',
-                      height: '18px',
-                      background: '#2E7D32',
-                      borderRadius: '0 2px 2px 0',
-                      boxShadow: '0 0 8px rgba(46,125,50,0.60)',
-                    }}
-                  />
-                )}
                 <span
                   className="material-symbols-outlined"
                   style={{
                     fontSize: '18px',
-                    color: isActive ? '#2E7D32' : undefined,
+                    color: isActive ? '#FFFFFF' : undefined,
                     fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0",
                     transition: 'all 150ms',
                   }}
@@ -90,7 +71,7 @@ export default function NavigationSidebar() {
       {/* Bottom: Avatar */}
       <div
         className="flex items-center justify-center pb-4"
-        style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px' }}
+        style={{ borderTop: '1px solid #E7E6DF', paddingTop: '12px' }}
       >
         <div
           title="FIFA Admin · Command Lead"

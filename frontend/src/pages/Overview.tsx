@@ -172,7 +172,7 @@ export default function Overview() {
   /* ── Error state ─────────────────────────────────────── */
   if (hasError && (!state || !analytics)) {
     return (
-      <div style={{ height: 'calc(100vh - 48px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: 'calc(100vh - 60px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div
           className="glass-card"
           style={{ maxWidth: '400px', width: '100%', padding: '48px 40px', borderRadius: '24px', textAlign: 'center' }}
@@ -193,7 +193,7 @@ export default function Overview() {
   /* ── Loading state ────────────────────────────────────── */
   if (!state || !analytics) {
     return (
-      <div style={{ height: 'calc(100vh - 48px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: 'calc(100vh - 60px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ width: '32px', height: '32px', border: '2px solid #2E7D32', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }} />
           <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(0,0,0,0.25)', textTransform: 'uppercase' }}>Connecting Telemetry...</p>
@@ -208,9 +208,9 @@ export default function Overview() {
   return (
     <div
       style={{
-        minHeight: 'calc(100vh - 48px)',
+        minHeight: 'calc(100vh - 60px)',
         background: '#F7F6F1',
-        padding: '32px 32px 56px',
+        padding: '40px 32px 56px',
       }}
     >
 

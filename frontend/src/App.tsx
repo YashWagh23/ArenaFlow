@@ -59,11 +59,11 @@ function DashboardLayout() {
       {/* Fixed Left Sidebar */}
       <NavigationSidebar />
 
-      {/* Scrollable main canvas — offset for sidebar (48px) + header (48px) */}
+      {/* Scrollable main canvas — offset for sidebar (48px) + header (60px) */}
       <div
         className="absolute scrollbar-thin overflow-y-auto"
         style={{
-          top: '48px',
+          top: '60px',
           left: '48px',
           right: 0,
           bottom: 0,
