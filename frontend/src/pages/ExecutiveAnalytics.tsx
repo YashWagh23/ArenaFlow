@@ -117,13 +117,9 @@ export default function ExecutiveAnalytics() {
 
   return (
     <div
-      style={{
-        minHeight: 'calc(100vh - 48px)',
-        background: '#F7F6F1',
-        padding: '40px 40px 72px',
-      }}
+      className="min-h-[calc(100vh-48px)] bg-[#F7F6F1] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-16"
     >
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+      <div className="max-w-[1280px] mx-auto">
 
         {/* ── Page Header ─────────────────────────────────── */}
         <div style={{ marginBottom: '56px' }}>
@@ -163,16 +159,7 @@ export default function ExecutiveAnalytics() {
 
         {/* ── Hero Metrics Row — Bloomberg style ──────────── */}
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1px',
-            background: 'rgba(0,0,0,0.06)',
-            border: '1px solid rgba(0,0,0,0.06)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            marginBottom: '24px',
-          }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[rgba(0,0,0,0.06)] border border-[rgba(0,0,0,0.06)] rounded-[16px] overflow-hidden mb-6"
         >
           {[
             { label: 'Total Attendance', value: totalAttendance.toLocaleString(), unit: 'spectators', color: '#2E7D32' },
@@ -201,12 +188,11 @@ export default function ExecutiveAnalytics() {
         </div>
 
         {/* ── Main Bento Grid ──────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: '16px', marginBottom: '16px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
 
           {/* Safety Gauge */}
           <div
-            className="glass-panel"
-            style={{ borderRadius: '20px', padding: '36px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', minHeight: '360px' }}
+            className="glass-panel lg:col-span-5 flex flex-col items-center justify-center gap-5 min-h-[360px] rounded-[20px] p-6 lg:p-9"
           >
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.25)', alignSelf: 'flex-start' }}>Safety Gauge</span>
             <SafetyGauge score={safetyScore} />
@@ -219,7 +205,7 @@ export default function ExecutiveAnalytics() {
           </div>
 
           {/* Crowd Density + Capacity */}
-          <div className="glass-panel" style={{ borderRadius: '20px', padding: '36px', minHeight: '360px' }}>
+          <div className="glass-panel lg:col-span-7 rounded-[20px] p-6 lg:p-9 min-h-[360px]">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
               <div>
                 <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '18px', color: '#1C1C1C', letterSpacing: '-0.02em', marginBottom: '4px' }}>Crowd Density & Capacity</h3>
@@ -241,7 +227,7 @@ export default function ExecutiveAnalytics() {
             </div>
 
             {/* Per-stand breakdown */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '24px' }}>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 pt-6 border-t border-[rgba(0,0,0,0.06)]">
               {stands.map(stand => {
                 const pct = Math.min(100, Math.round((stand.val / stand.cap) * 100));
                 const barColor = pct > 85 ? '#C84A4A' : pct > 70 ? '#C48A00' : '#2E7D32';
@@ -265,10 +251,10 @@ export default function ExecutiveAnalytics() {
         </div>
 
         {/* ── Second Row ────────────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
 
           {/* Stand Occupancy Distribution */}
-          <div className="glass-panel" style={{ borderRadius: '20px', padding: '28px' }}>
+          <div className="glass-panel rounded-[20px] p-6 lg:p-7">
             <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', color: '#1C1C1C', letterSpacing: '-0.015em', marginBottom: '20px' }}>
               Stand Occupancy
             </h4>
@@ -297,7 +283,7 @@ export default function ExecutiveAnalytics() {
           </div>
 
           {/* AI Prediction Accuracy */}
-          <div className="glass-panel" style={{ borderRadius: '20px', padding: '28px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', position: 'relative' }}>
+          <div className="glass-panel relative flex flex-col items-center justify-center gap-4 rounded-[20px] p-6 lg:p-7 min-h-[280px]">
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.25)', position: 'absolute', top: '20px', left: '20px' }}>AI Accuracy</span>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <MiniRing value={predAccuracy} color="#6BCB6E" size={100} />
@@ -312,7 +298,7 @@ export default function ExecutiveAnalytics() {
           </div>
 
           {/* Zone Health Index */}
-          <div className="glass-panel" style={{ borderRadius: '20px', padding: '28px' }}>
+          <div className="glass-panel rounded-[20px] p-6 lg:p-7">
             <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', color: '#1C1C1C', letterSpacing: '-0.015em', marginBottom: '16px' }}>
               Zone Health
             </h4>

@@ -37,6 +37,8 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 
 /* ── Dashboard layout shell ──────────────────────────── */
 function DashboardLayout() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div
       className="h-screen w-screen overflow-hidden relative"
@@ -54,17 +56,16 @@ function DashboardLayout() {
       />
 
       {/* Fixed Top Header */}
-      <Header />
+      <Header isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
 
       {/* Fixed Left Sidebar */}
-      <NavigationSidebar />
+      <NavigationSidebar isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
       {/* Scrollable main canvas — offset for sidebar (48px) + header (60px) */}
       <div
-        className="absolute scrollbar-thin overflow-y-auto"
+        className="absolute scrollbar-thin overflow-y-auto left-0 md:left-[48px]"
         style={{
           top: '60px',
-          left: '48px',
           right: 0,
           bottom: 0,
           zIndex: 10,

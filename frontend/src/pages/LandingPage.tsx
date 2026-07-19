@@ -146,10 +146,8 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="font-display"
+            className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-[80px]"
             style={{
-              fontWeight: 900,
-              fontSize: 'clamp(52px, 6.5vw, 96px)',
               lineHeight: 0.96,
               letterSpacing: '-0.05em',
               color: '#1C1C1C',
@@ -164,12 +162,9 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="font-sans"
+            className="font-sans text-base sm:text-lg text-[#606060]"
             style={{
-              fontWeight: 400,
-              fontSize: '17px',
               lineHeight: 1.7,
-              color: 'rgba(28,28,28,0.50)',
               maxWidth: '540px',
               marginBottom: '40px',
             }}
@@ -184,12 +179,13 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '60px' }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
+            style={{ marginBottom: '60px' }}
           >
             {/* Primary CTA */}
             <button
               onClick={() => navigate('/dashboard')}
-              className="group flex items-center justify-center gap-2.5 font-display"
+              className="group flex items-center justify-center gap-2.5 font-display w-full sm:w-auto"
               style={{
                 padding: '13px 28px',
                 background: '#2E7D32',
@@ -200,6 +196,7 @@ export default function LandingPage() {
                 fontWeight: 700,
                 fontSize: '15px',
                 letterSpacing: '-0.01em',
+                minHeight: '44px',
                 boxShadow: '0 0 0 1px rgba(46,125,50,0.50), 0 6px 24px rgba(46,125,50,0.25)',
                 transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               }}
@@ -222,7 +219,7 @@ export default function LandingPage() {
             {/* Ghost CTA */}
             <button
               onClick={() => { window.scrollTo({ top: window.innerHeight, behavior: 'smooth' }); }}
-              className="font-sans flex items-center justify-center gap-2"
+              className="font-sans flex items-center justify-center gap-2 w-full sm:w-auto"
               style={{
                 padding: '13px 28px',
                 background: '#FFFFFF',
@@ -232,6 +229,7 @@ export default function LandingPage() {
                 cursor: 'pointer',
                 fontWeight: 600,
                 fontSize: '15px',
+                minHeight: '44px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
                 transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               }}
@@ -266,7 +264,7 @@ export default function LandingPage() {
       </main>
 
       {/* ── WHY ARENAFLOW ── */}
-      <section className="relative z-10 w-full py-40 px-6 max-w-6xl mx-auto">
+      <section className="relative z-10 w-full py-16 sm:py-24 md:py-32 lg:py-40 px-4 sm:px-6 max-w-6xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -279,7 +277,7 @@ export default function LandingPage() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {FEATURES.map((feat, i) => (
             <motion.div
               key={feat.title}
@@ -309,7 +307,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── MATCHDAY STORY (TIMELINE) ── */}
-      <section className="relative z-10 w-full py-40 px-6 max-w-4xl mx-auto">
+      <section className="relative z-10 w-full py-16 sm:py-24 md:py-32 lg:py-40 px-4 sm:px-6 max-w-4xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -332,20 +330,20 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative mb-16 last:mb-0 md:w-[calc(50%-40px)] ${i % 2 === 0 ? 'md:ml-auto md:pl-10' : 'md:mr-auto md:pr-10 md:text-right'}`}
+              className={`relative mb-12 lg:mb-16 last:mb-0 lg:w-[calc(50%-40px)] w-full pl-6 md:pl-10 lg:pl-0 ${i % 2 === 0 ? 'lg:ml-auto lg:pl-10' : 'lg:mr-auto lg:pr-10 lg:text-right'}`}
             >
-              {/* Timeline Dot (Desktop only) */}
-              <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#2E7D32] border-[3px] border-[#F9F9F7] ${i % 2 === 0 ? '-left-[46px]' : '-right-[46px]'}`} style={{ boxShadow: '0 0 0 1px rgba(46,125,50,0.2)' }} />
+              {/* Timeline Dot */}
+              <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#2E7D32] border-[3px] border-[#F9F9F7] left-[-6px] lg:left-auto lg:block ${i % 2 === 0 ? 'lg:-left-[46px]' : 'lg:-right-[46px]'}`} style={{ boxShadow: '0 0 0 1px rgba(46,125,50,0.2)' }} />
               
-              <span className="font-mono text-[13px] text-[#A68A36] font-bold block mb-2">{step.time}</span>
-              <p className="font-display font-semibold text-2xl text-[#1C1C1C] tracking-tight">{step.desc}</p>
+              <span className="font-mono text-xs text-[#A68A36] font-bold block mb-2">{step.time}</span>
+              <p className="font-display font-semibold text-xl lg:text-2xl text-[#1C1C1C] tracking-tight">{step.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* ── DIGITAL TWIN SHOWCASE ── */}
-      <section className="relative z-10 w-full py-40 px-6 max-w-[1400px] mx-auto overflow-hidden">
+      <section className="relative z-10 w-full py-16 sm:py-24 md:py-32 lg:py-40 px-4 sm:px-6 max-w-[1400px] mx-auto overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'url(/images/media__1784464990328.png)', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(20px)', mixBlendMode: 'multiply' }} />
         
         <motion.div 
@@ -404,7 +402,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── AI COPILOT (TYPING ANIMATION) ── */}
-      <section className="relative z-10 w-full py-40 px-6 max-w-3xl mx-auto">
+      <section className="relative z-10 w-full py-16 sm:py-24 md:py-32 lg:py-40 px-4 sm:px-6 max-w-3xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -423,7 +421,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── EXECUTIVE ANALYTICS ── */}
-      <section className="relative z-10 w-full py-40 px-6 max-w-6xl mx-auto border-t border-[rgba(0,0,0,0.04)]">
+      <section className="relative z-10 w-full py-16 sm:py-24 md:py-32 lg:py-40 px-4 sm:px-6 max-w-6xl mx-auto border-t border-[rgba(0,0,0,0.04)]">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {KPIS.map((kpi, i) => (
             <motion.div
@@ -434,7 +432,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-center"
             >
-              <div className="font-display font-bold text-5xl text-[#1C1C1C] mb-2">{kpi.value}<span className="text-3xl text-[#7A7A7A] ml-1">{kpi.suffix}</span></div>
+              <div className="font-display font-bold text-4xl sm:text-5xl text-[#1C1C1C] mb-2">{kpi.value}<span className="text-2xl sm:text-3xl text-[#7A7A7A] ml-1">{kpi.suffix}</span></div>
               <div className="font-mono text-[11px] font-bold text-[#7A7A7A] tracking-wider uppercase">{kpi.label}</div>
             </motion.div>
           ))}
@@ -442,7 +440,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── TECHNOLOGY ── */}
-      <section className="relative z-10 w-full py-24 px-6 text-center max-w-4xl mx-auto">
+      <section className="relative z-10 w-full py-12 sm:py-16 md:py-24 px-4 sm:px-6 text-center max-w-4xl mx-auto">
         <div className="flex flex-wrap justify-center items-center gap-4">
           {TECH_STACK.map((tech, i) => (
             <motion.div
@@ -506,7 +504,7 @@ function TimelineLine() {
   const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div ref={ref} className="absolute left-[7px] md:left-1/2 top-0 bottom-0 w-[2px] bg-[rgba(0,0,0,0.06)] md:-translate-x-1/2">
+    <div ref={ref} className="absolute left-[7px] lg:left-1/2 top-0 bottom-0 w-[2px] bg-[rgba(0,0,0,0.06)] lg:-translate-x-1/2">
       <motion.div className="w-full bg-[#2E7D32]" style={{ height }} />
     </div>
   );

@@ -207,15 +207,11 @@ export default function Overview() {
 
   return (
     <div
-      style={{
-        minHeight: 'calc(100vh - 60px)',
-        background: '#F7F6F1',
-        padding: '40px 32px 56px',
-      }}
+      className="min-h-[calc(100vh-60px)] bg-[#F7F6F1] px-4 sm:px-6 lg:px-8 py-6 lg:py-10 pb-14"
     >
 
       {/* ── Page Header ─────────────────────────────────── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-8">
         <div>
           <span className="section-eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Stadium Command Center</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -247,7 +243,7 @@ export default function Overview() {
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '20px' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
 
         {/* SAFETY SCORE */}
         <div className="glass-card rounded-2xl p-5" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -295,16 +291,11 @@ export default function Overview() {
       </div>
 
       {/* ── Main Grid: Digital Twin (8-col) + AI Copilot (4-col) ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
 
         {/* Stadium Map — 2/3 width */}
         <div
-          style={{
-            gridColumn: 'span 2',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-          }}
+          className="lg:col-span-2 flex flex-col gap-3"
         >
           {/* Stadium Map Card */}
           <div
@@ -412,12 +403,8 @@ export default function Overview() {
 
         {/* AI Copilot — THE signature component */}
         <div
-          className="glass-card glass-dark"
+          className="glass-card glass-dark flex flex-col overflow-hidden rounded-[20px]"
           style={{
-            borderRadius: '20px',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
             minHeight: '508px',
           }}
         >
@@ -645,12 +632,12 @@ export default function Overview() {
       </div>
 
       {/* ── Bottom Grid: Timeline + Impact Forecast ────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Timeline — 2/3 */}
         <div
-          className="glass-card"
-          style={{ gridColumn: 'span 2', borderRadius: '20px', padding: '20px', height: '320px', display: 'flex', flexDirection: 'column' }}
+          className="glass-card lg:col-span-2 flex flex-col rounded-[20px] p-4 lg:p-5"
+          style={{ height: '320px' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -660,24 +647,14 @@ export default function Overview() {
             <span className="pill-badge pill-badge-green">Active Feed</span>
           </div>
 
-          <div className="flex-grow overflow-y-auto scrollbar-thin" style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '4px' }}>
+          <div className="flex-grow overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto scrollbar-thin flex flex-row lg:flex-col gap-3 lg:gap-[6px] pb-4 lg:pb-0 snap-x pr-1">
             {timeline.map((item, idx) => (
               <motion.div
                 key={`${item.id}-${idx}`}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  padding: '10px 12px',
-                  borderRadius: '10px',
-                  background: 'rgba(0,0,0,0.02)',
-                  border: '1px solid rgba(0,0,0,0.04)',
-                  cursor: 'default',
-                  transition: 'background 150ms',
-                }}
+                className="flex items-start gap-3 p-2.5 rounded-[10px] min-w-[280px] lg:min-w-0 snap-start border border-[rgba(0,0,0,0.04)] bg-[rgba(0,0,0,0.02)] transition-colors duration-150"
                 onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(0,0,0,0.04)'}
                 onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(0,0,0,0.02)'}
               >
@@ -724,8 +701,8 @@ export default function Overview() {
 
         {/* AI Impact Forecast — 1/3 */}
         <div
-          className="glass-card"
-          style={{ borderRadius: '20px', padding: '20px', height: '320px', display: 'flex', flexDirection: 'column' }}
+          className="glass-card flex flex-col rounded-[20px] p-4 lg:p-5"
+          style={{ height: '320px' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
             <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#6BCB6E', fontVariationSettings: "'FILL' 1" }}>monitoring</span>

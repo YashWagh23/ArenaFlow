@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTelemetry } from '../context/SocketContext';
 
-export default function Header() {
+export default function Header({ isMobileMenuOpen, setIsMobileMenuOpen }: { isMobileMenuOpen?: boolean; setIsMobileMenuOpen?: (v: boolean) => void }) {
   const { state, events } = useTelemetry();
   const [clock, setClock] = useState('');
   const activeIncidentsCount = events.filter(e => !e.resolved).length;
@@ -23,72 +23,83 @@ export default function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 w-full z-50 flex justify-between items-center select-none"
+      className="fixed top-0 left-0 w-full z-50 flex justify-between items-center select-none px-4 md:px-6 md:pl-[64px]"
       style={{
         height: '60px',
-        paddingLeft: '64px',
-        paddingRight: '24px',
         background: '#FFFFFF',
         borderBottom: '1px solid #E7E6DF',
       }}
     >
-      {/* Left: Wordmark */}
-      <NavLink
-        to="/dashboard"
-        className="flex items-center gap-2.5 no-underline"
-        style={{ textDecoration: 'none' }}
-      >
-        {/* Logo mark */}
-        <div
-          style={{
-            width: '20px',
-            height: '20px',
-            borderRadius: '5px',
-            background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
+      {/* Left: Wordmark & Hamburger */}
+      <div className="flex items-center gap-3">
+        {/* Mobile Hamburger Menu Button */}
+        <button
+          className="md:hidden flex items-center justify-center w-11 h-11 -ml-2 rounded-md hover:bg-black/5 text-[#1C1C1C]"
+          onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: '12px', color: '#F7F6F1', fontVariationSettings: "'FILL' 1", fontWeight: '700' }}
-          >
-            stadium
+          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
+            {isMobileMenuOpen ? 'close' : 'menu'}
           </span>
-        </div>
+        </button>
 
-        {/* Wordmark */}
-        <span
-          style={{
-            fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: '14px',
-            letterSpacing: '-0.025em',
-            color: '#1C1C1C',
-          }}
+        <NavLink
+          to="/dashboard"
+          className="flex items-center gap-2.5 no-underline"
+          style={{ textDecoration: 'none' }}
         >
-          ArenaFlow
-        </span>
+          {/* Logo mark */}
+          <div
+            style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: '5px',
+              background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: '12px', color: '#F7F6F1', fontVariationSettings: "'FILL' 1", fontWeight: '700' }}
+            >
+              stadium
+            </span>
+          </div>
 
-        {/* Separator */}
-        <span style={{ color: 'rgba(0,0,0,0.12)', fontSize: '12px', fontWeight: 300 }}>/</span>
+          {/* Wordmark */}
+          <span
+            className="hidden sm:inline-block"
+            style={{
+              fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '14px',
+              letterSpacing: '-0.025em',
+              color: '#1C1C1C',
+            }}
+          >
+            ArenaFlow
+          </span>
 
-        {/* Context label */}
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '10px',
-            fontWeight: 600,
-            letterSpacing: '0.10em',
-            color: '#7A7A7A',
-            textTransform: 'uppercase',
-          }}
-        >
-          FIFA 2026
-        </span>
-      </NavLink>
+          {/* Separator */}
+          <span className="hidden sm:inline-block" style={{ color: 'rgba(0,0,0,0.12)', fontSize: '12px', fontWeight: 300 }}>/</span>
+
+          {/* Context label */}
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '10px',
+              fontWeight: 600,
+              letterSpacing: '0.10em',
+              color: '#7A7A7A',
+              textTransform: 'uppercase',
+            }}
+          >
+            FIFA 2026
+          </span>
+        </NavLink>
+      </div>
 
       {/* Right: Status indicators */}
       <div className="flex items-center gap-5">

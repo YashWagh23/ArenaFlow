@@ -107,7 +107,7 @@ const SEG_BTN = (active: boolean): React.CSSProperties => ({
   fontWeight: 700,
   letterSpacing: '0.12em',
   textTransform: 'uppercase',
-  padding: '5px 10px',
+  padding: '14px 10px',
   borderRadius: '7px',
   border: 'none',
   cursor: 'pointer',
@@ -286,15 +286,7 @@ export default function StadiumMap() {
 
       {/* ── Top Controls — Segmented Controls ────────────── */}
       <div
-        style={{
-          position: 'absolute',
-          top: '16px',
-          left: '16px',
-          display: 'flex',
-          gap: '8px',
-          zIndex: 20,
-          pointerEvents: 'auto',
-        }}
+        className="absolute top-4 left-4 z-20 pointer-events-auto flex flex-col sm:flex-row gap-2"
       >
         {/* Heatmap toggle */}
         <div style={SEG_WRAP}>
@@ -350,8 +342,8 @@ export default function StadiumMap() {
       {/* ── SVG Map Canvas ───────────────────────────────── */}
       <svg
         viewBox="0 0 800 600"
-        className="w-full max-h-[460px] select-none"
-        style={{ position: 'relative', zIndex: 4 }}
+        className="w-full h-auto select-none"
+        style={{ position: 'relative', zIndex: 4, maxHeight: '460px' }}
       >
         <defs>
           {/* Transparent map bg because container handles #101510 */}
@@ -631,21 +623,7 @@ export default function StadiumMap() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            style={{
-              position: 'absolute',
-              bottom: '20px',
-              left: '20px',
-              width: '272px',
-              background: 'rgba(255,255,255,0.95)',
-              border: '1px solid rgba(0,0,0,0.08)',
-              borderRadius: '16px',
-              padding: '16px',
-              backdropFilter: 'blur(24px)',
-              boxShadow: '0 16px 48px rgba(0,0,0,0.12)',
-              zIndex: 20,
-              display: 'flex',
-              flexDirection: 'column',
-            }}
+            className="absolute bottom-5 left-5 z-20 flex flex-col bg-white/95 border border-black/10 rounded-[16px] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.12)] backdrop-blur-[24px] w-[calc(100%-40px)] sm:w-[272px]"
           >
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>

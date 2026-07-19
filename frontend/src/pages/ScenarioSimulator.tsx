@@ -79,13 +79,9 @@ export default function ScenarioSimulator() {
 
   return (
     <div
-      style={{
-        minHeight: 'calc(100vh - 48px)',
-        background: '#F7F6F1',
-        padding: '40px 40px 64px',
-      }}
+      className="min-h-[calc(100vh-48px)] bg-[#F7F6F1] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-16"
     >
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="max-w-[1200px] mx-auto">
 
         {/* ── Page Header ─────────────────────────────────── */}
         <div style={{ marginBottom: '56px' }}>
@@ -132,13 +128,7 @@ export default function ScenarioSimulator() {
         </div>
 
         {/* ── Scenario Cards ───────────────────────────────── */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '16px',
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {scenariosList.map((scen, i) => (
             <motion.div
               key={scen.id}
@@ -267,6 +257,7 @@ export default function ScenarioSimulator() {
                   onClick={() => handleTrigger(scen.id)}
                   style={{
                     width: '100%',
+                    minHeight: '44px',
                     padding: '11px 20px',
                     background: 'transparent',
                     border: `1px solid ${scen.accentBorder}`,
