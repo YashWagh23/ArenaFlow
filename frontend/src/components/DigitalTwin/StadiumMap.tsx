@@ -42,26 +42,39 @@ const zoneLayouts: ZonePosition[] = [
 function getDarkStatusColors(zone: {
   status: string;
   waitTime: number;
+  crowd: number;
+  capacity: number;
 }, heatmapActive: boolean, telemetryMode: 'crowd' | 'wait') {
   if (!heatmapActive) {
     return {
-      fill: 'rgba(0,0,0,0.04)',
-      stroke: 'rgba(0,0,0,0.10)',
-      hoverFill: 'rgba(0,0,0,0.07)',
+      fill: 'rgba(255,255,255,0.02)',
+      stroke: 'rgba(255,255,255,0.06)',
+      hoverFill: 'rgba(46,125,50,0.12)',
+      hoverStroke: '#2E7D32'
     };
   }
   if (telemetryMode === 'wait') {
     if (zone.waitTime > 25)
-      return { fill: 'rgba(200,74,74,0.07)', stroke: 'rgba(200,74,74,0.32)', hoverFill: 'rgba(200,74,74,0.13)' };
+      return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#FFFFFF' };
     if (zone.waitTime > 8)
-      return { fill: 'rgba(196,138,0,0.07)', stroke: 'rgba(196,138,0,0.32)', hoverFill: 'rgba(196,138,0,0.13)' };
-    return { fill: 'rgba(46,125,50,0.06)', stroke: 'rgba(46,125,50,0.22)', hoverFill: 'rgba(46,125,50,0.11)' };
+      return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#FFFFFF' };
+    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#FFFFFF' };
   }
+  
   if (zone.status === 'critical')
-    return { fill: 'rgba(200,74,74,0.07)', stroke: 'rgba(200,74,74,0.32)', hoverFill: 'rgba(200,74,74,0.13)' };
+    return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#FFFFFF' };
   if (zone.status === 'warning')
-    return { fill: 'rgba(196,138,0,0.07)', stroke: 'rgba(196,138,0,0.32)', hoverFill: 'rgba(196,138,0,0.13)' };
-  return { fill: 'rgba(46,125,50,0.06)', stroke: 'rgba(46,125,50,0.22)', hoverFill: 'rgba(46,125,50,0.11)' };
+    return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#FFFFFF' };
+  
+  // Normal/Optimal -> depends on crowd load vs capacity
+  const loadRatio = zone.crowd / zone.capacity;
+  if (loadRatio > 0.8) {
+    return { fill: '#2E7D32', stroke: '#2E7D32', hoverFill: '#2E7D32', hoverStroke: '#FFFFFF' }; // High
+  } else if (loadRatio > 0.4) {
+    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#FFFFFF' }; // Medium
+  } else {
+    return { fill: '#CDECCF', stroke: '#CDECCF', hoverFill: '#CDECCF', hoverStroke: '#FFFFFF' }; // Low
+  }
 }
 
 const LABEL_STYLE: React.CSSProperties = {
@@ -188,8 +201,8 @@ export default function StadiumMap() {
 
   return (
     <div
-      className="relative w-full h-full flex flex-col items-center justify-center"
-      style={{ background: 'transparent' }}
+      className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: '#101510', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', boxShadow: '0 8px 20px rgba(0,0,0,0.18)' }}
     >
       {/* ── Tactical Grid ────────────────────────────────── */}
       <div
@@ -205,18 +218,13 @@ export default function StadiumMap() {
         }}
       />
 
-      {/* ── Ambient Pitch Glow ────────────────────────────── */}
+      {/* ── Ambient Pitch Glow (Replaced with soft vignette) ────────────── */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '200px',
-          height: '280px',
-          background: 'radial-gradient(ellipse at center, rgba(46,125,50,0.08) 0%, transparent 70%)',
-          filter: 'blur(80px)',
+          inset: 0,
+          background: 'radial-gradient(circle, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 45%, transparent 80%)',
           pointerEvents: 'none',
           zIndex: 1,
         }}
@@ -346,28 +354,27 @@ export default function StadiumMap() {
         style={{ position: 'relative', zIndex: 4 }}
       >
         <defs>
-          {/* Dark map radial background */}
+          {/* Transparent map bg because container handles #101510 */}
           <radialGradient id="dtMapBg" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="#111814" />
-            <stop offset="70%"  stopColor="#0B0F0D" />
-            <stop offset="100%" stopColor="#F7F6F1" />
+            <stop offset="0%"   stopColor="transparent" />
+            <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
-          {/* Subtle vignette */}
+          {/* Subtle vignette removed since we use CSS radial gradient above */}
           <radialGradient id="dtVignette" cx="50%" cy="50%" r="70%">
-            <stop offset="60%"  stopColor="transparent" stopOpacity="0" />
-            <stop offset="100%" stopColor="#050805"    stopOpacity="0.65" />
+            <stop offset="0%"  stopColor="transparent" />
+            <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
-          {/* Pitch — darker green */}
+          {/* Pitch — increased saturation slightly */}
           <linearGradient id="dtPitchGrad" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%"   stopColor="#1E6B35" />
-            <stop offset="100%" stopColor="#195A2E" />
+            <stop offset="0%"   stopColor="#2A8B42" />
+            <stop offset="100%" stopColor="#1C652E" />
           </linearGradient>
 
           {/* Pitch ambient glow */}
           <radialGradient id="dtPitchGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="#2E7D32" stopOpacity="0.06" />
+            <stop offset="0%"   stopColor="#6BCB6E" stopOpacity="0.10" />
             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
           </radialGradient>
 
@@ -375,19 +382,21 @@ export default function StadiumMap() {
             <rect x="340" y="200" width="120" height="200" rx="6" />
           </clipPath>
 
-          {/* Selection glow */}
-          <filter id="dtSelectGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          {/* Hover / Selection filter (soft shadow instead of glow) */}
+          <filter id="dtHoverShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#2E7D32" floodOpacity="0.4" />
+          </filter>
+          <filter id="dtSelectShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#000000" floodOpacity="0.3" />
           </filter>
         </defs>
 
         {/* Background */}
         <rect width="800" height="600" fill="url(#dtMapBg)" rx="20" />
 
-        {/* Stadium bowl outline geometry — 5% opacity structural rings */}
-        <ellipse cx="400" cy="300" rx="340" ry="260" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="1" />
-        <ellipse cx="400" cy="300" rx="290" ry="215" fill="none" stroke="rgba(0,0,0,0.04)" strokeWidth="0.8" strokeDasharray="6 6" />
+        {/* Stadium bowl outline geometry — lighter stands */}
+        <ellipse cx="400" cy="300" rx="340" ry="260" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+        <ellipse cx="400" cy="300" rx="290" ry="215" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" strokeDasharray="6 6" />
 
         {/* Vignette */}
         <rect width="800" height="600" fill="url(#dtVignette)" rx="20" />
@@ -427,8 +436,8 @@ export default function StadiumMap() {
             <rect x="340" y="200" width="120" height="200" fill="url(#dtPitchGlow)" />
           </g>
 
-          {/* Pitch markings — rgba(0,0,0,.18) */}
-          <g fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1.2">
+          {/* Pitch markings — sharper white with opacity */}
+          <g fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2">
             <rect x="340" y="200" width="120" height="200" rx="6" />
             <line x1="340" y1="300" x2="460" y2="300" />
             <circle cx="400" cy="300" r="22" />
@@ -464,34 +473,32 @@ export default function StadiumMap() {
                 onMouseMove={(e) => handleMouseMove(e, zone.id)}
                 onClick={() => setSelectedZoneId(zone.id)}
               >
-                {/* Selection ring */}
+                {/* Selection border */}
                 {isSelected && zone.shape === 'rect' && zone.w && zone.h && (
                   <motion.rect
                     layoutId={`select-${zone.id}`}
-                    x={zone.x - 5} y={zone.y - 5}
-                    width={zone.w + 10} height={zone.h + 10}
-                    rx={13}
+                    x={zone.x} y={zone.y}
+                    width={zone.w} height={zone.h}
+                    rx={8}
                     fill="none"
                     stroke="#2E7D32"
-                    strokeWidth="1.5"
-                    opacity={0.6}
-                    filter="url(#dtSelectGlow)"
+                    strokeWidth="2"
+                    filter="url(#dtSelectShadow)"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
+                    animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                   />
                 )}
                 {isSelected && zone.shape === 'circle' && zone.r && (
                   <motion.circle
                     layoutId={`select-${zone.id}`}
-                    cx={zone.x} cy={zone.y} r={zone.r + 6}
+                    cx={zone.x} cy={zone.y} r={zone.r}
                     fill="none"
                     stroke="#2E7D32"
-                    strokeWidth="1.5"
-                    opacity={0.6}
-                    filter="url(#dtSelectGlow)"
+                    strokeWidth="2"
+                    filter="url(#dtSelectShadow)"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
+                    animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                   />
                 )}
@@ -504,16 +511,17 @@ export default function StadiumMap() {
                       width={zone.w} height={zone.h}
                       rx={8}
                       fill={isHovered ? c.hoverFill : c.fill}
-                      stroke={c.stroke}
-                      strokeWidth={1}
+                      stroke={isHovered ? c.hoverStroke : c.stroke}
+                      strokeWidth={isHovered ? 1.5 : 1}
+                      filter={isHovered ? 'url(#dtHoverShadow)' : 'none'}
                       style={{ transition: 'fill 200ms, stroke 200ms' }}
                     />
                     <text
                       x={zone.x + zone.w / 2}
                       y={zone.y + zone.h / 2 + 4}
                       textAnchor="middle"
-                      fill="#D8D8D8"
-                      style={{ ...LABEL_STYLE, opacity: 0.75 }}
+                      fill="#FFFFFF"
+                      style={{ ...LABEL_STYLE, opacity: heatmapActive ? 1.0 : 0.72 }}
                     >
                       {zone.name}
                     </text>
@@ -536,15 +544,16 @@ export default function StadiumMap() {
                     <circle
                       cx={zone.x} cy={zone.y} r={zone.r}
                       fill={isHovered ? c.hoverFill : c.fill}
-                      stroke={c.stroke}
-                      strokeWidth={1}
+                      stroke={isHovered ? c.hoverStroke : c.stroke}
+                      strokeWidth={isHovered ? 1.5 : 1}
+                      filter={isHovered ? 'url(#dtHoverShadow)' : 'none'}
                       style={{ transition: 'fill 200ms, stroke 200ms' }}
                     />
                     <text
                       x={zone.x} y={zone.y + 3}
                       textAnchor="middle"
-                      fill="#D8D8D8"
-                      style={{ ...LABEL_STYLE, fontSize: '8px', opacity: 0.80 }}
+                      fill="#FFFFFF"
+                      style={{ ...LABEL_STYLE, fontSize: '8px', opacity: heatmapActive ? 1.0 : 0.72 }}
                     >
                       {zone.name.split(' ')[1]}
                     </text>
