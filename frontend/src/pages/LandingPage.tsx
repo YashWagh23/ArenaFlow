@@ -407,9 +407,18 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center"
+              className="text-center bg-white/40 backdrop-blur-2xl border border-[rgba(0,0,0,0.06)] rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1"
+              style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.03)' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(46,125,50,0.08)';
+                e.currentTarget.style.borderColor = 'rgba(46,125,50,0.15)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.03)';
+                e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)';
+              }}
             >
-              <div className="font-display font-bold text-4xl sm:text-5xl text-[#1C1C1C] mb-2">{kpi.value}<span className="text-2xl sm:text-3xl text-[#7A7A7A] ml-1">{kpi.suffix}</span></div>
+              <div className="font-display font-bold text-4xl sm:text-5xl text-[#1C1C1C] mb-3">{kpi.value}<span className="text-2xl sm:text-3xl text-[#7A7A7A] ml-1">{kpi.suffix}</span></div>
               <div className="font-mono text-[11px] font-bold text-[#7A7A7A] tracking-wider uppercase">{kpi.label}</div>
             </motion.div>
           ))}
