@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-test('Hackathon Demo Flow (Judge Walkthrough)', async ({ page }) => {
+test('Hackathon Demo Flow (Judge Walkthrough)', async ({ request, page }) => {
+  // Reset backend simulation state to ensure isolated repeats
+  await request.post('http://localhost:5000/api/simulation/reset');
+
   // 1. Open Landing Page
   await page.goto('/');
   await expect(page).toHaveTitle(/ArenaFlow/i);
@@ -41,7 +44,12 @@ test('Hackathon Demo Flow (Judge Walkthrough)', async ({ page }) => {
   await expect(playbookCard.getByText(/Metro/i).first()).toBeVisible();
 
   // 8. Click Deploy Playbook
-  await playbookCard.getByRole('button', { name: /Approve & Deploy Playbook/i }).click();
+  const deployButton = playbookCard.getByRole('button', { name: /Approve & Deploy Playbook/i });
+  await expect(deployButton).toBeEnabled();
+  await deployButton.click();
+
+  // Wait for the intermediate executing state to prove the click registered
+  await expect(page.getByText(/Executing Playbook/i)).toBeVisible({ timeout: 5000 });
 
   // 9. Verify incident resolves (returns to System Nominal status)
   await expect(page.getByText('System Nominal')).toBeVisible({ timeout: 20000 });

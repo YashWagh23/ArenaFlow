@@ -26,8 +26,8 @@ test('No console errors', async ({ page }) => {
   // Wait for telemetry data to load
   await expect(page.getByText('ArenaFlow Dashboard')).toBeVisible({ timeout: 10000 });
   
-  // Wait a short duration to capture any post-load console errors
-  await page.waitForTimeout(1000);
+  // Wait for the network to settle to capture any post-load console errors
+  await page.waitForLoadState('networkidle');
 
   expect(errors).toEqual([]);
 });

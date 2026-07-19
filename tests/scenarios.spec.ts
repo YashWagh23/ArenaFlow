@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ request }) => {
+  await request.post('http://localhost:5000/api/simulation/reset');
+});
+
 test('Scenario page opens', async ({ page }) => {
   await page.goto('/scenarios');
 
