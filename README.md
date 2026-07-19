@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="frontend/public/images/arenaflow-logo.png" alt="ArenaFlow Logo" width="200"/>
   <h1>ArenaFlow</h1>
   <p><strong>Real-time AI-Powered Stadium Operations & Incident Command Center</strong></p>
   
@@ -11,10 +10,6 @@
 
 <br />
 
-<!-- Hero Image Placeholder -->
-<div align="center">
-  <img src="frontend/public/images/pitch-bg.jpg" alt="ArenaFlow Hero Image" width="800" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"/>
-</div>
 
 <br />
 
@@ -39,11 +34,6 @@ Managing massive crowds, safety incidents, transit delays, and medical emergenci
 
 ## 🎥 Demo
 
-<!-- Demo GIF Placeholder -->
-<div align="center">
-  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=Demo+GIF+Coming+Soon" alt="ArenaFlow Demo GIF" width="800" style="border-radius: 12px;"/>
-  <p><em>Watch ArenaFlow in action handling a massive egress scenario.</em></p>
-</div>
 
 ---
 
@@ -125,10 +115,6 @@ Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended).
 
 ## 🖼️ Screenshots
 
-<div align="center">
-  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=Dashboard+Screenshot" alt="Dashboard" width="400"/>
-  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=AI+Copilot+Screenshot" alt="AI Copilot" width="400"/>
-</div>
 
 ---
 
