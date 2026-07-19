@@ -351,9 +351,14 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full aspect-[16/9] bg-[#121412] rounded-[32px] p-8 border border-white/10 overflow-hidden flex items-center justify-center"
-          style={{ boxShadow: '0 40px 100px rgba(0,0,0,0.5)' }}
+          className="relative w-full aspect-[16/9] bg-[#121412] bg-cover bg-center rounded-[32px] p-8 border border-white/10 overflow-hidden flex items-center justify-center"
+          style={{ 
+            boxShadow: '0 40px 100px rgba(0,0,0,0.5)',
+            backgroundImage: 'url(/images/pitch-bg.jpg)'
+          }}
         >
+          {/* Subtle dark overlay so UI elements remain readable */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
           {/* Dashboard UI Frame */}
           <div className="absolute top-0 left-0 w-full h-12 bg-white/5 border-b border-white/5 flex items-center px-6">
             <div className="flex gap-2">
@@ -363,22 +368,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Central Mock Map Area */}
-          <div className="relative w-[70%] h-[70%] border border-white/5 rounded-3xl bg-white/[0.02] flex items-center justify-center mt-8">
-            {/* Radar Sweep */}
-            <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="absolute w-full h-full rounded-full border border-[#2E7D32]/20 border-t-[#2E7D32]/80 opacity-30 pointer-events-none"
-              style={{ scale: 0.8 }}
-            />
-            <div className="absolute w-2 h-2 rounded-full bg-[#2E7D32] shadow-[0_0_20px_#2E7D32]" />
-            <div className="absolute w-[40%] h-[60%] border border-[#2E7D32]/20 rounded-[40px]" />
-            
-            {/* Heatmap Dots */}
-            <motion.div animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: 3, repeat: Infinity }} className="absolute top-[30%] left-[30%] w-12 h-12 bg-[#F3C969]/20 rounded-full blur-xl" />
-            <motion.div animate={{ opacity: [0.1, 0.5, 0.1] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} className="absolute bottom-[30%] right-[30%] w-16 h-16 bg-[#2E7D32]/30 rounded-full blur-xl" />
-          </div>
 
           {/* Floating UI Mocks */}
           <motion.div 
