@@ -325,7 +325,7 @@ export default function Overview() {
                 right: 0,
                 zIndex: 20,
                 padding: '16px 20px',
-                background: 'linear-gradient(to bottom, rgba(8,12,10,0.90) 0%, rgba(8,12,10,0) 100%)',
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -341,15 +341,15 @@ export default function Overview() {
             </div>
 
             {/* Map */}
-            <div style={{ position: 'absolute', inset: 0, background: '#0A120E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'absolute', inset: 0, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <StadiumMap />
             </div>
           </div>
 
-          {/* Simulation Console — dark terminal strip */}
+          {/* Simulation Console — terminal strip */}
           <div
             style={{
-              background: '#050805',
+              background: '#FFFFFF',
               border: '1px solid rgba(0,0,0,0.06)',
               borderRadius: '14px',
               padding: '14px 20px',
