@@ -30,10 +30,18 @@ jobs:
       - name: Typecheck & Build Frontend
         run: npm run build --workspace=frontend
 
-      # We don't have explicit lint/unit scripts defined in package.json at root, 
-      # but if they existed, we'd run them here. Using test:e2e as the main gate.
-      # Assuming shared has tests or we just build it
-      
+      - name: Build Shared Package
+        run: npm run build --workspace=shared
+
+      - name: Run Backend Unit Tests
+        run: npm run test:unit --workspace=backend
+
+      - name: Run Shared Utility Unit Tests
+        run: npm run test:unit --workspace=shared
+
+      - name: Run Frontend Component Tests
+        run: node frontend/tests/component.test.ts
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
