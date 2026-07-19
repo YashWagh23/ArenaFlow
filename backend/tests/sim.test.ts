@@ -1,4 +1,4 @@
-import { SimulationEngine } from '../src/simulation/simEngine';
+import { SimulationEngine } from '../src/simulation/SimulationEngine.js';
 import { Server as SocketServer } from 'socket.io';
 import assert from 'assert';
 
@@ -7,8 +7,8 @@ console.log('🧪 Running Backend Simulation Engine tests...');
 try {
   // Mock SocketServer
   const mockIo = {
-    emit: (event: string, data: any) => {},
-  } as any as SocketServer;
+    emit: (event: string, data: unknown) => {},
+  } as unknown as SocketServer;
 
   const engine = new SimulationEngine(mockIo);
 

@@ -3,10 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { useTelemetry } from '../context/SocketContext';
 
 export default function Header() {
-  const { state } = useTelemetry();
+  const { state, events } = useTelemetry();
   const [clock, setClock] = useState('');
+  const activeIncidentsCount = events.filter(e => !e.resolved).length;
 
-  // Live UTC clock
+  // Live UTC clock — preserved from original
   useEffect(() => {
     const tick = () => {
       const now = new Date();
@@ -20,58 +21,148 @@ export default function Header() {
     return () => clearInterval(id);
   }, []);
 
-  const routeLabels: Record<string, string> = {
-    '/dashboard': 'Dashboard',
-    '/scenarios': 'Scenarios',
-    '/analytics': 'Analytics',
-  };
-
   return (
-    <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-16 bg-surface/80 backdrop-blur-xl border-b border-white/30 shadow-sm select-none">
-      {/* Left: Brand + Subtitle + Active page nav */}
-      <div className="flex items-center gap-8">
-        <div className="flex flex-col">
-          <NavLink to="/dashboard" className="font-headline-lg text-headline-lg font-bold text-primary tracking-tight leading-none">
-            ArenaFlow
-          </NavLink>
-          <span className="font-label-caps text-[9px] text-on-surface-variant/70 mt-1 uppercase tracking-wider">
-            FIFA 2026 Stadium Operations
+    <header
+      className="fixed top-0 left-0 w-full z-50 flex justify-between items-center select-none"
+      style={{
+        height: '48px',
+        paddingLeft: '64px',
+        paddingRight: '24px',
+        background: 'rgba(8,12,10,0.85)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+      }}
+    >
+      {/* Left: Wordmark */}
+      <NavLink
+        to="/dashboard"
+        className="flex items-center gap-2.5 no-underline"
+        style={{ textDecoration: 'none' }}
+      >
+        {/* Logo mark */}
+        <div
+          style={{
+            width: '20px',
+            height: '20px',
+            borderRadius: '5px',
+            background: 'linear-gradient(135deg, #006B3F 0%, #00D46A 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: '12px', color: '#080C0A', fontVariationSettings: "'FILL' 1", fontWeight: '700' }}
+          >
+            stadium
           </span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-6 ml-6">
-          {Object.entries(routeLabels).map(([path, label]) => (
-            <NavLink
-              key={path}
-              to={path}
-              className={({ isActive }) =>
-                isActive
-                  ? 'text-primary font-semibold border-b-2 border-primary py-4 text-sm'
-                  : 'text-on-surface-variant font-medium hover:text-primary transition-colors py-4 text-sm'
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-      </div>
+        {/* Wordmark */}
+        <span
+          style={{
+            fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: '14px',
+            letterSpacing: '-0.025em',
+            color: '#F0F0EE',
+          }}
+        >
+          ArenaFlow
+        </span>
 
-      {/* Right: Safety Score badge & Live Clock */}
-      <div className="flex items-center gap-4">
-        {/* Safety Score Badge */}
-        {state && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full border border-primary/20">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="font-label-caps text-label-caps text-primary">
-              Safety Score: {state.globalSafetyScore}%
+        {/* Separator */}
+        <span style={{ color: 'rgba(255,255,255,0.12)', fontSize: '12px', fontWeight: 300 }}>/</span>
+
+        {/* Context label */}
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '9px',
+            fontWeight: 600,
+            letterSpacing: '0.10em',
+            color: 'rgba(255,255,255,0.30)',
+            textTransform: 'uppercase',
+          }}
+        >
+          FIFA 2026
+        </span>
+      </NavLink>
+
+      {/* Right: Status indicators */}
+      <div className="flex items-center gap-5">
+
+        {/* Active incident — only visible when critical */}
+        {state && activeIncidentsCount > 0 && (
+          <div
+            className="flex items-center gap-1.5"
+            style={{ animation: 'pulse-critical 1.8s ease infinite' }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: '#FF4444' }}
+            />
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '9px',
+                fontWeight: 700,
+                letterSpacing: '0.10em',
+                color: '#FF4444',
+                textTransform: 'uppercase',
+              }}
+            >
+              {activeIncidentsCount} Incident{activeIncidentsCount > 1 ? 's' : ''}
             </span>
           </div>
         )}
 
-        {/* Live UTC Clock */}
-        <div className="glass-card px-4 py-2 rounded-xl flex items-center gap-2">
-          <span className="font-label-caps text-on-surface-variant text-[11px]">UTC</span>
-          <span className="font-stats-numeric text-on-surface text-[14px]">{clock}</span>
+        {/* System status — nominal indicator */}
+        {state && activeIncidentsCount === 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '9px',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'rgba(0,212,106,0.70)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Nominal
+            </span>
+          </div>
+        )}
+
+        {/* UTC Clock — minimal, just the number */}
+        <div className="flex items-center gap-1.5">
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '9px',
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.25)',
+              letterSpacing: '0.06em',
+            }}
+          >
+            UTC
+          </span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.55)',
+              letterSpacing: '0.06em',
+            }}
+          >
+            {clock}
+          </span>
         </div>
       </div>
     </header>

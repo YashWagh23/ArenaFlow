@@ -2,583 +2,791 @@ import React, { useEffect, useState } from 'react';
 import { useTelemetry } from '../context/SocketContext';
 import StadiumMap from '../components/DigitalTwin/StadiumMap';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useClock } from '../hooks/useClock';
+import { useConnectionStatus } from '../hooks/useConnectionStatus';
+import { useDashboardMetrics } from '../hooks/useDashboardMetrics';
+import { usePlaybookExecution } from '../hooks/usePlaybookExecution';
+import { formatLocalClock, formatNumber } from '../utils/format';
 
+/* ── Phase definitions — preserved from original ───────── */
 const phasesList = [
-  { key: 'detection', label: 'Detect' },
-  { key: 'prediction', label: 'Predict' },
+  { key: 'detection',          label: 'Detect'   },
+  { key: 'prediction',         label: 'Predict'  },
   { key: 'playbook_generated', label: 'Playbook' },
-  { key: 'operator_approval', label: 'Approve' },
-  { key: 'execution', label: 'Execute' },
-  { key: 'resolved', label: 'Resolved' },
+  { key: 'operator_approval',  label: 'Approve'  },
+  { key: 'execution',          label: 'Execute'  },
+  { key: 'resolved',           label: 'Resolved' },
 ];
 
+/* ── Scenario details lookup — preserved exactly ───────── */
 const getScenarioDetails = (eventId: string) => {
   const lowercaseId = eventId.toLowerCase();
-  
   if (lowercaseId.includes('metro-delay')) {
     return {
-      impact: 'Crowd density risk Level 4 at East transit exit ramps within 8 minutes.',
+      impact: 'CROWD DENSITY risk Level 4 at East transit exit ramps within 8 minutes.',
       resolutionTime: '3 mins',
-      resources: [
-        '3 Transit Coordinators',
-        '6 Transport Stewards',
-        '3 Safety Officers',
-        'Open Gate B & D',
-        'Redirect Transit Flow'
-      ],
+      resources: ['3 Transit Coordinators', '6 Transport Stewards', '3 Safety Officers', 'Open Gate B & D', 'Redirect Transit Flow'],
       noAction: { safety: '70%', crowd: '4.5/m²', wait: '40m', risk: 'Critical', affected: '3,200' },
-      withAI: { safety: '98%', crowd: '1.2/m²', wait: '3m', risk: 'Low', time: '3 mins' }
+      withAI:   { safety: '98%', crowd: '1.2/m²', wait: '3m',  risk: 'Low',      time: '3 mins' },
     };
   }
-  
   if (lowercaseId.includes('gate-failure') || lowercaseId.includes('gate-c')) {
     return {
       impact: 'Inflow backlog wait time rising to 45 minutes; potential crowd crushing at outer barriers.',
       resolutionTime: '5 mins',
-      resources: [
-        '4 IT Support Technicians',
-        '8 Crowd Marshals',
-        '2 Medical First Responders',
-        'Deploy 12 Backup Scanners'
-      ],
+      resources: ['4 IT Support Technicians', '8 Crowd Marshals', '2 Medical First Responders', 'Deploy 12 Backup Scanners'],
       noAction: { safety: '65%', crowd: '5.2/m²', wait: '50m', risk: 'Critical', affected: '4,800' },
-      withAI: { safety: '98%', crowd: '1.1/m²', wait: '4m', risk: 'Low', time: '5 mins' }
+      withAI:   { safety: '98%', crowd: '1.1/m²', wait: '4m',  risk: 'Low',      time: '5 mins' },
     };
   }
-  
   if (lowercaseId.includes('medical-emergency') || lowercaseId.includes('medical')) {
     return {
       impact: 'Critical incident response time must stay below 4 minutes to ensure safety.',
       resolutionTime: '2 mins',
-      resources: [
-        '1 Emergency Medical Team',
-        '3 Security Escorts',
-        '1 Trauma Nurse',
-        'Clear Med-Evac Route West'
-      ],
-      noAction: { safety: '75%', crowd: 'N/A', wait: '15m dispatch', risk: 'High', affected: '1' },
-      withAI: { safety: '99%', crowd: 'N/A', wait: '2m dispatch', risk: 'Nominal', time: '2 mins' }
+      resources: ['1 Emergency Medical Team', '3 Security Escorts', '1 Trauma Nurse', 'Clear Med-Evac Route West'],
+      noAction: { safety: '75%', crowd: 'N/A', wait: '15m dispatch', risk: 'High',    affected: '1' },
+      withAI:   { safety: '99%', crowd: 'N/A', wait: '2m dispatch',  risk: 'Nominal', time: '2 mins' },
     };
   }
-  
   if (lowercaseId.includes('heavy-rain') || lowercaseId.includes('weather') || lowercaseId.includes('parking')) {
     return {
-      impact: 'Safety score drop to 80% due to slip hazards; entry bottlenecks at open gates.',
+      impact: 'SAFETY SCORE drop to 80% due to slip hazards; entry bottlenecks at open gates.',
       resolutionTime: '4 mins',
-      resources: [
-        '4 Maintenance Crew (Mats)',
-        '10 Concourse Volunteers',
-        '2 Shuttle Route Adjusters',
-        'Activate Dynamic Signage'
-      ],
+      resources: ['4 Maintenance Crew (Mats)', '10 Concourse Volunteers', '2 Shuttle Route Adjusters', 'Activate Dynamic Signage'],
       noAction: { safety: '80%', crowd: '3.8/m²', wait: '25m', risk: 'Warning', affected: '8,500' },
-      withAI: { safety: '96%', crowd: '1.5/m²', wait: '5m', risk: 'Low', time: '4 mins' }
+      withAI:   { safety: '96%', crowd: '1.5/m²', wait: '5m',  risk: 'Low',     time: '4 mins' },
     };
   }
-  
   if (lowercaseId.includes('match-end') || lowercaseId.includes('gate-d')) {
     return {
       impact: 'Heavy transit congestion and wait times exceeding 45 minutes at Metro platforms.',
       resolutionTime: '6 mins',
-      resources: [
-        '15 General Stewards',
-        '6 Police Officers',
-        '4 Traffic Controllers',
-        'Open All Exit Corridors'
-      ],
+      resources: ['15 General Stewards', '6 Police Officers', '4 Traffic Controllers', 'Open All Exit Corridors'],
       noAction: { safety: '70%', crowd: '4.8/m²', wait: '45m', risk: 'Warning', affected: '80,000' },
-      withAI: { safety: '98%', crowd: '1.3/m²', wait: '6m', risk: 'Low', time: '6 mins' }
+      withAI:   { safety: '98%', crowd: '1.3/m²', wait: '6m',  risk: 'Low',     time: '6 mins' },
     };
   }
-
   return {
     impact: 'Minor localized delay and flow capacity drop.',
     resolutionTime: '3 mins',
-    resources: [
-      '5 Stewards',
-      '2 Security Officers',
-      'Activate Dynamic Signage'
-    ],
+    resources: ['5 Stewards', '2 Security Officers', 'Activate Dynamic Signage'],
     noAction: { safety: '78%', crowd: '3.5/m²', wait: '22m', risk: 'Warning', affected: '1,500' },
-    withAI: { safety: '98%', crowd: '1.2/m²', wait: '3m', risk: 'Low', time: '3 mins' }
+    withAI:   { safety: '98%', crowd: '1.2/m²', wait: '3m',  risk: 'Low',     time: '3 mins' },
   };
 };
 
+/* ── Arc Gauge — preserved logic, dark styling ─────────── */
+function ArcGauge({ value, size = 80, strokeWidth = 6, color = '#00D46A' }: {
+  value: number; size?: number; strokeWidth?: number; color?: string;
+}) {
+  const r = (size - strokeWidth) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (circ * value) / 100;
+  return (
+    <svg width={size} height={size} className="transform -rotate-90">
+      <circle cx={size/2} cy={size/2} r={r} stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} fill="none" />
+      <circle
+        cx={size/2} cy={size/2} r={r}
+        stroke={color} strokeWidth={strokeWidth} fill="none"
+        strokeDasharray={circ} strokeDashoffset={offset}
+        strokeLinecap="round"
+        style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.25,0.46,0.45,0.94)' }}
+      />
+    </svg>
+  );
+}
+
+/* ── KPI Card ─────────────────────────────────────────── */
+function KPICard({
+  label,
+  value,
+  unit,
+  color,
+  children,
+  pulse,
+  sub,
+}: {
+  label: string;
+  value: string | number;
+  unit?: string;
+  color?: string;
+  children?: React.ReactNode;
+  pulse?: boolean;
+  sub?: string;
+}) {
+  return (
+    <div
+      className={`glass-card card-hover rounded-2xl p-5 flex flex-col gap-2 ${pulse ? 'pulse-red' : ''}`}
+      style={{
+        borderColor: pulse ? 'rgba(255,68,68,0.20)' : undefined,
+      }}
+    >
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.30)' }}>
+        {label}
+      </span>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px' }}>
+        {children}
+        <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 900, fontSize: '40px', letterSpacing: '-0.04em', lineHeight: 1.0, color: color || '#F0F0EE' }}>
+          {value}
+        </span>
+        {unit && <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginBottom: '6px' }}>{unit}</span>}
+      </div>
+      {sub && (
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: color ? `${color}99` : 'rgba(255,255,255,0.25)' }}>
+          {sub}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ── Main Overview Component ──────────────────────────── */
 export default function Overview() {
-  const { state, analytics, events, timeline, isPlaying, setPlaying, scrubSim, executeStep, connectionError } = useTelemetry();
-  const [clock, setClock] = useState('');
-  const [executingEventId, setExecutingEventId] = useState<string | null>(null);
-  const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
-  const [isComplete, setIsComplete] = useState(false);
+  const { timeline, scrubSim, setPlaying } = useTelemetry();
+  
+  const now = useClock();
+  const clock = formatLocalClock(now);
+  const { hasError, socketUrl } = useConnectionStatus();
+  
+  const {
+    state,
+    analytics,
+    events,
+    activeEvent,
+    isPlaying,
+    totalOccupancy,
+    capacityPct,
+    safetyScore,
+    safetyColor,
+    activeIncidentsCount,
+    aiConfidence
+  } = useDashboardMetrics();
 
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      setClock(`${h}:${m}:${s}`);
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
+  const {
+    executingEventId,
+    currentStepIndex,
+    isComplete,
+    handleAuthorize
+  } = usePlaybookExecution(activeEvent);
 
-  // Find the first unresolved event to focus the copilot playbook on
-  const activeEvent = events.find(e => !e.resolved) || null;
-
-  // Reset execution status if the active event changes
-  useEffect(() => {
-    if (activeEvent?.id !== executingEventId) {
-      setExecutingEventId(null);
-      setCurrentStepIndex(-1);
-      setIsComplete(false);
-    }
-  }, [activeEvent, executingEventId]);
-
-  const handleAuthorize = async () => {
-    if (!activeEvent) return;
-    setExecutingEventId(activeEvent.id);
-    setCurrentStepIndex(0);
-    setIsComplete(false);
-
-    const steps = activeEvent.playbook.steps;
-    for (let i = 0; i < steps.length; i++) {
-      setCurrentStepIndex(i);
-      await new Promise(resolve => setTimeout(resolve, 800));
-      executeStep(activeEvent.id, steps[i].id);
-    }
-    setCurrentStepIndex(steps.length);
-    setIsComplete(true);
-  };
-
-  if (connectionError && (!state || !analytics)) {
+  /* ── Error state ─────────────────────────────────────── */
+  if (hasError && (!state || !analytics)) {
     return (
-      <div className="flex-1 flex items-center justify-center h-[calc(100vh-64px)]">
-        <div className="text-center space-y-6 max-w-sm px-6 py-8 glass-card rounded-3xl border border-error-container/30">
-          <span className="material-symbols-outlined text-critical-red text-5xl">cloud_off</span>
-          <div className="space-y-1.5">
-            <h3 className="font-title-md text-title-md font-bold text-slate-900">Telemetry Backend Offline</h3>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              The live stadium telemetry server is currently unreachable. Make sure the backend service is deployed and running at:
-            </p>
-            <code className="block text-[10px] bg-slate-100 p-2.5 rounded-xl font-mono break-all select-all">
-              https://arena-flow-backend.vercel.app
-            </code>
-          </div>
+      <div style={{ height: 'calc(100vh - 48px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div
+          className="glass-card"
+          style={{ maxWidth: '400px', width: '100%', padding: '48px 40px', borderRadius: '24px', textAlign: 'center' }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '40px', color: '#FF4444', display: 'block', marginBottom: '16px' }}>cloud_off</span>
+          <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '18px', color: '#F0F0EE', marginBottom: '10px' }}>Telemetry Backend Offline</h3>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.65 }}>
+            The live stadium telemetry server is currently unreachable. Make sure the backend service is running at:
+          </p>
+          <code style={{ display: 'block', fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '8px', padding: '10px 14px', marginTop: '14px', wordBreak: 'break-all' }}>
+            {socketUrl}
+          </code>
         </div>
       </div>
     );
   }
 
+  /* ── Loading state ────────────────────────────────────── */
   if (!state || !analytics) {
     return (
-      <div className="flex-1 flex items-center justify-center h-[calc(100vh-64px)]">
-        <div className="text-center space-y-4">
-          <span className="material-symbols-outlined text-primary text-4xl animate-spin">autorenew</span>
-          <p className="font-label-caps text-label-caps text-on-surface-variant">Connecting Telemetry...</p>
+      <div style={{ height: 'calc(100vh - 48px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: '32px', height: '32px', border: '2px solid #00D46A', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }} />
+          <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase' }}>Connecting Telemetry...</p>
         </div>
       </div>
     );
   }
 
-  const totalOccupancy =
-    state.zones['stand-north'].currentLoad +
-    state.zones['stand-south'].currentLoad +
-    state.zones['stand-east'].currentLoad +
-    state.zones['stand-west'].currentLoad;
-
-  const safetyScore = state.globalSafetyScore;
-  const activeIncidentsCount = events.filter(e => !e.resolved).length;
-  const aiConfidence = activeEvent ? `${activeEvent.probability}%` : '98.2%';
+  /* ── Computed values — preserved exactly ─────────────── */
   const scenDetails = activeEvent ? getScenarioDetails(activeEvent.id) : null;
 
   return (
-    <div className="p-container-padding pb-16 min-h-screen select-none">
-      {/* Page Header */}
-      <div className="flex justify-between items-end mb-8">
+    <div
+      style={{
+        minHeight: 'calc(100vh - 48px)',
+        background: '#080C0A',
+        padding: '32px 32px 56px',
+      }}
+    >
+
+      {/* ── Page Header ─────────────────────────────────── */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
         <div>
-          <p className="font-label-caps text-label-caps text-on-surface-variant tracking-widest mb-1">STADIUM COMMAND CENTER</p>
-          <h1 className="font-headline-xl text-headline-xl text-on-surface font-bold">ArenaFlow Dashboard</h1>
-        </div>
-        <div className="glass-card px-6 py-3 rounded-xl flex items-center gap-3">
-          <span className="font-label-caps text-label-caps text-on-surface-variant">LOCAL TIME</span>
-          <span className="font-stats-numeric text-stats-numeric text-on-surface">{clock}</span>
-        </div>
-      </div>
-
-      {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-8">
-        {/* Safety Score Card */}
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between border-l-4 border-primary">
-          <div>
-            <p className="font-label-caps text-label-caps text-on-surface-variant mb-1">SAFETY SCORE</p>
-            <h2 className="font-stats-numeric text-4xl font-bold text-primary">{safetyScore}%</h2>
-          </div>
-          <div className="w-full bg-surface-container rounded-full h-1.5 overflow-hidden mt-4">
-            <div className="bg-primary h-full transition-all duration-500" style={{ width: `${safetyScore}%` }} />
-          </div>
-        </div>
-
-        {/* Active Incidents Card */}
-        <div className={`glass-card rounded-2xl p-6 flex flex-col justify-between border-l-4 ${activeIncidentsCount > 0 ? 'border-critical-red animate-pulse' : 'border-primary'}`}>
-          <div>
-            <p className="font-label-caps text-label-caps text-on-surface-variant mb-1">ACTIVE INCIDENTS</p>
-            <h2 className="font-stats-numeric text-4xl font-bold text-on-surface">{activeIncidentsCount}</h2>
-          </div>
-          <p className="text-[11px] text-on-surface-variant mt-4 font-label-caps">
-            {activeIncidentsCount > 0 ? 'MITIGATION REQUIRED' : 'STADIUM NORMAL'}
-          </p>
-        </div>
-
-        {/* Crowd Density Card */}
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between border-l-4 border-primary">
-          <div>
-            <p className="font-label-caps text-label-caps text-on-surface-variant mb-1">CROWD DENSITY</p>
-            <div className="flex items-baseline gap-2">
-              <h2 className="font-stats-numeric text-4xl font-bold text-on-surface">{totalOccupancy.toLocaleString()}</h2>
-              <span className="text-on-surface-variant/60 font-body-md text-body-md">/ 85k</span>
+          <span className="section-eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Stadium Command Center</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <h1 style={{
+              fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(28px, 3vw, 44px)',
+              letterSpacing: '-0.04em',
+              color: '#F0F0EE',
+              lineHeight: 1.0,
+            }}>
+              ArenaFlow Dashboard
+            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(0,212,106,0.08)', border: '1px solid rgba(0,212,106,0.15)', borderRadius: '9999px' }}>
+              <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.10em', textTransform: 'uppercase' }}>LIVE</span>
             </div>
           </div>
-          <div className="w-full bg-surface-container rounded-full h-1.5 overflow-hidden mt-4">
-            <div className="bg-primary h-full transition-all duration-500" style={{ width: `${Math.min((totalOccupancy / 85000) * 100, 100)}%` }} />
-          </div>
         </div>
 
-        {/* AI Confidence Card */}
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between border-l-4 border-primary">
+        {/* Clock */}
+        <div className="glass-card" style={{ padding: '12px 20px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span className="material-symbols-outlined" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.25)' }}>schedule</span>
           <div>
-            <p className="font-label-caps text-label-caps text-on-surface-variant mb-1">AI CONFIDENCE</p>
-            <h2 className="font-stats-numeric text-4xl font-bold text-on-surface">{aiConfidence}</h2>
+            <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.10em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase' }}>Local Time</p>
+            <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '20px', fontWeight: 700, color: '#F0F0EE', letterSpacing: '0.02em', lineHeight: 1.2 }}>{clock}</p>
           </div>
-          <p className="text-[11px] text-primary mt-4 font-label-caps">ACTIVE ORCHESTRATOR LINK</p>
         </div>
       </div>
 
-      {/* Main Grid: Digital Twin (8-col) + AI Copilot (4-col) */}
-      <div className="grid grid-cols-12 gap-gutter mb-8">
-        
-        {/* Stadium Digital Twin (8 cols) */}
-        <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
-          <div className="glass-card rounded-[32px] overflow-hidden relative border border-white/50 h-[500px]">
-            {/* Stadium Map */}
-            <div className="absolute inset-0 z-0">
-              <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
-                <StadiumMap />
+      {/* ── KPI Row ──────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '20px' }}>
+
+        {/* SAFETY SCORE */}
+        <div className="glass-card rounded-2xl p-5" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            <ArcGauge value={safetyScore} size={68} strokeWidth={5} color={safetyColor} />
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', fontWeight: 700, color: safetyColor }}>{safetyScore}</span>
+            </div>
+          </div>
+          <div>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', display: 'block', marginBottom: '4px' }}>SAFETY SCORE</span>
+            <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 900, fontSize: '36px', letterSpacing: '-0.04em', lineHeight: 1.0, color: safetyColor }}>{safetyScore}%</span>
+          </div>
+        </div>
+
+        {/* ACTIVE INCIDENTS */}
+        <KPICard
+          label="ACTIVE INCIDENTS"
+          value={activeIncidentsCount}
+          color={activeIncidentsCount > 0 ? '#FF4444' : '#F0F0EE'}
+          pulse={activeIncidentsCount > 0}
+          sub={activeIncidentsCount > 0 ? 'Mitigation Required' : 'Stadium Normal'}
+        />
+
+        {/* CROWD DENSITY */}
+        <div className="glass-card rounded-2xl p-5">
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', display: 'block', marginBottom: '8px' }}>CROWD DENSITY</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '10px' }}>
+            <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 900, fontSize: '32px', letterSpacing: '-0.04em', lineHeight: 1.0, color: '#F0F0EE' }}>{totalOccupancy.toLocaleString()}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>/ 85k</span>
+          </div>
+          <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.06)', borderRadius: '9999px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${capacityPct}%`, background: '#00D46A', borderRadius: '9999px', transition: 'width 700ms cubic-bezier(0.25,0.46,0.45,0.94)' }} />
+          </div>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.25)', marginTop: '6px', display: 'block' }}>{capacityPct}% capacity</span>
+        </div>
+
+        {/* AI CONFIDENCE */}
+        <KPICard
+          label="AI CONFIDENCE"
+          value={aiConfidence}
+          color="#F5C842"
+          sub="Active Orchestrator"
+        />
+      </div>
+
+      {/* ── Main Grid: Digital Twin (8-col) + AI Copilot (4-col) ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+
+        {/* Stadium Map — 2/3 width */}
+        <div
+          style={{
+            gridColumn: 'span 2',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }}
+        >
+          {/* Stadium Map Card */}
+          <div
+            className="glass-card"
+            style={{
+              height: '480px',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+          >
+            {/* Header overlay */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 20,
+                padding: '16px 20px',
+                background: 'linear-gradient(to bottom, rgba(8,12,10,0.90) 0%, rgba(8,12,10,0) 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>
+                  Digital Twin · Al Bayt Stadium
+                </span>
               </div>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.20)', letterSpacing: '0.08em' }}>FIFA 2026</span>
+            </div>
+
+            {/* Map */}
+            <div style={{ position: 'absolute', inset: 0, background: '#0A120E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <StadiumMap />
             </div>
           </div>
 
-          {/* Integrated Simulation Scrub Console */}
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-6 shadow-sm border border-white/40">
+          {/* Simulation Console — dark terminal strip */}
+          <div
+            style={{
+              background: '#050805',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '14px',
+              padding: '14px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+            }}
+          >
             <button
               onClick={() => setPlaying(!isPlaying)}
-              aria-label="Simulation playback play pause toggle button"
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-950 hover:bg-slate-800 text-white transition shadow-sm shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              aria-label="Simulation playback toggle"
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: '50%',
+                border: 'none',
+                background: isPlaying ? '#00D46A' : 'rgba(255,255,255,0.08)',
+                color: isPlaying ? '#080C0A' : '#F0F0EE',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 200ms',
+                flexShrink: 0,
+              }}
             >
-              {isPlaying ? (
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>pause</span>
-              ) : (
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
-              )}
+              <span className="material-symbols-outlined" style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }}>
+                {isPlaying ? 'pause' : 'play_arrow'}
+              </span>
             </button>
 
-            <div className="flex-grow flex items-center space-x-4">
-              <span className="text-[10px] font-bold font-mono tracking-widest text-slate-400 uppercase">00m</span>
-              <div className="flex-grow relative flex flex-col justify-center">
+            <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}>00m</span>
+              <div style={{ flexGrow: 1, position: 'relative' }}>
                 <input
                   type="range"
                   min="0"
                   max="95"
                   value={state.elapsedMinutes}
                   aria-label="Simulation match minute timeline scrub slider"
-                  onChange={(e) => scrubSim(Number(e.target.value))}
-                  className="w-full h-1 bg-slate-100 rounded-full appearance-none cursor-pointer accent-slate-900 hover:accent-slate-800"
+                  onChange={e => scrubSim(Number(e.target.value))}
                   style={{
-                    background: `linear-gradient(to right, #006b3f 0%, #006b3f ${(state.elapsedMinutes / 95) * 100}%, #eeeef0 ${(state.elapsedMinutes / 95) * 100}%, #eeeef0 100%)`
+                    width: '100%',
+                    height: '3px',
+                    borderRadius: '9999px',
+                    background: `linear-gradient(to right, #00D46A 0%, #00D46A ${(state.elapsedMinutes / 95) * 100}%, rgba(255,255,255,0.08) ${(state.elapsedMinutes / 95) * 100}%, rgba(255,255,255,0.08) 100%)`,
                   }}
                 />
-                <div className="flex justify-between px-0.5 text-[8px] font-bold font-mono text-slate-400 mt-2">
-                  <span>Start</span>
-                  <span>Halftime (45m)</span>
-                  <span>Fulltime (90m)</span>
-                  <span>Complete (95m)</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                  {['Kick-off', '45m HT', '90m FT', '95m'].map(label => (
+                    <span key={label} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 600, color: 'rgba(255,255,255,0.20)', letterSpacing: '0.06em' }}>{label}</span>
+                  ))}
                 </div>
               </div>
-              <span className="text-[10px] font-bold font-mono tracking-widest text-slate-400 uppercase">95m</span>
-              <span className="font-stats-numeric text-primary text-sm shrink-0">{state.elapsedMinutes}m</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.06em' }}>95m</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '16px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.02em', minWidth: '36px' }}>{state.elapsedMinutes}m</span>
             </div>
           </div>
         </div>
 
-        {/* AI Copilot Playbook (4 cols) */}
-        <div className="col-span-12 lg:col-span-4 flex">
-          <div className="glass-card rounded-[32px] p-6 w-full flex flex-col h-[580px] justify-between overflow-y-auto scrollbar-thin">
+        {/* AI Copilot — THE signature component */}
+        <div
+          className="glass-card glass-dark"
+          style={{
+            borderRadius: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            minHeight: '508px',
+          }}
+        >
+          {/* Copilot Header */}
+          <div
+            style={{
+              padding: '20px 20px 16px',
+              borderBottom: '1px solid rgba(0,212,106,0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, #006B3F 0%, #00D46A 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 0 20px rgba(0,212,106,0.30)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#080C0A', fontVariationSettings: "'FILL' 1" }}>smart_toy</span>
+            </div>
             <div>
-              <div className="flex items-center gap-3 mb-6 border-b border-outline/10 pb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center text-white shrink-0 shadow-sm">
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>smart_toy</span>
-                </div>
-                <div>
-                  <h3 className="font-title-md text-title-md font-bold text-on-surface">AI Copilot</h3>
-                  <p className="text-[10px] text-primary font-medium uppercase font-mono tracking-wider">Predictive Operations</p>
-                </div>
-              </div>
-
-              <AnimatePresence mode="wait">
-                {activeEvent && scenDetails ? (
-                  <motion.div
-                    key="active-playbook"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="space-y-5"
-                  >
-                    {/* Anomaly & Metadata */}
-                    <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-1">
-                        AI Prediction Anomaly
-                      </span>
-                      <h4 className="text-sm font-bold text-slate-900 leading-tight">
-                        {activeEvent.title}
-                      </h4>
-                    </div>
-
-                    {/* AI Decision Timeline */}
-                    <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-2">AI Decision Stages</span>
-                      <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-outline/10 text-[9px] font-mono font-bold uppercase tracking-wider">
-                        {phasesList.map((phase, idx) => {
-                          const isCurrent = activeEvent.currentPhase === phase.key;
-                          const currentIdx = phasesList.findIndex(p => p.key === activeEvent.currentPhase);
-                          const isPast = idx < currentIdx;
-                          return (
-                            <React.Fragment key={phase.key}>
-                              <span className={`${isCurrent ? 'text-primary' : isPast ? 'text-slate-400' : 'text-slate-300'}`}>
-                                {phase.label}
-                              </span>
-                              {idx < phasesList.length - 1 && <span className="text-slate-200">→</span>}
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Problem details */}
-                    <div className="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-xl border border-outline/10 text-xs">
-                      <div>
-                        <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-0.5">Problem</span>
-                        <span className="font-semibold text-slate-800">{activeEvent.title}</span>
-                      </div>
-                      <div>
-                        <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-0.5">Confidence</span>
-                        <span className="font-stats-numeric text-primary font-bold">{activeEvent.probability}%</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-1">Why (Reason)</span>
-                      <p className="text-xs text-slate-600 leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-outline/10">"{activeEvent.reasoning}"</p>
-                    </div>
-
-                    {/* Resource Recommendation */}
-                    <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-2">Recommended Resources</span>
-                      <div className="bg-slate-50 border border-outline/10 p-3.5 rounded-xl space-y-2">
-                        <div className="flex flex-wrap gap-1.5">
-                          {scenDetails.resources.map((res, i) => (
-                            <span key={i} className="px-2.5 py-1 bg-white border border-outline/10 text-[9px] font-bold font-mono uppercase tracking-wider rounded-lg text-slate-700 shadow-sm">
-                              • {res}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="border-t border-outline/10 pt-2 flex justify-between text-[9px] font-mono font-bold text-slate-400">
-                          <span>DEPLOYMENT ETA</span>
-                          <span className="text-primary">{scenDetails.resolutionTime}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Playbook step checklist */}
-                    <div>
-                      <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-2">Playbook Steps</span>
-                      <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                        {activeEvent.playbook.steps.map((step, idx) => {
-                          const isExecuted = step.status === 'completed';
-                          const isExecuting = executingEventId === activeEvent.id && idx === currentStepIndex;
-                          return (
-                            <div key={step.id} className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-outline/10 shadow-sm">
-                              <span className={`material-symbols-outlined text-sm ${isExecuted ? 'text-primary font-bold' : isExecuting ? 'text-warning-amber animate-spin' : 'text-on-surface-variant/40'}`}>
-                                  {isExecuted ? 'check_circle' : isExecuting ? 'sync' : 'radio_button_unchecked'}
-                              </span>
-                              <span className={`text-[11px] font-medium leading-tight ${isExecuted ? 'line-through text-on-surface-variant' : 'text-on-surface'}`}>
-                                {step.action}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="nominal"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="py-16 text-center space-y-4"
-                  >
-                    <span className="material-symbols-outlined text-primary text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">System Nominal</p>
-                      <p className="text-xs text-slate-400 mt-1">Monitoring Stadium Operations</p>
-                      <p className="text-xs text-slate-500 mt-1">All systems operating normally.</p>
-                      <p className="text-[10px] text-primary font-mono uppercase tracking-wider mt-4">Telemetry link: GREEN</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 800, fontSize: '16px', color: '#F0F0EE', letterSpacing: '-0.02em', lineHeight: 1.1 }}>AI Copilot</h3>
+              <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Predictive Operations</p>
             </div>
-
-            {/* Action Deployment Button */}
-            {activeEvent && (
-              <div className="pt-4 border-t border-outline/10 mt-4">
-                {executingEventId === activeEvent.id ? (
-                  <div className="text-center py-3.5 bg-surface-container-low border border-outline/10 rounded-xl font-label-caps text-xs text-primary font-bold shadow-sm">
-                    {isComplete ? '✓ PLAYBOOK DEPLOYED' : 'EXECUTING PLAYBOOK...'}
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleAuthorize}
-                    className="w-full py-3.5 bg-primary text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    Approve & Deploy Playbook
-                  </button>
-                )}
-              </div>
-            )}
           </div>
-        </div>
 
+          {/* Copilot Body */}
+          <div className="flex-grow overflow-y-auto scrollbar-thin" style={{ padding: '16px 20px' }}>
+            <AnimatePresence mode="wait">
+              {activeEvent && scenDetails ? (
+                <motion.div
+                  key="active-playbook"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+                >
+                  {/* Anomaly header */}
+                  <div>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+                      AI Prediction Anomaly
+                    </span>
+                    <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', color: '#F0F0EE', letterSpacing: '-0.015em', lineHeight: 1.3 }}>
+                      {activeEvent.title}
+                    </h4>
+                  </div>
+
+                  {/* Phase stepper — horizontal */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {phasesList.map((phase, idx) => {
+                      const currentIdx = phasesList.findIndex(p => p.key === activeEvent.currentPhase);
+                      const isCurrent = idx === currentIdx;
+                      const isPast = idx < currentIdx;
+                      return (
+                        <React.Fragment key={phase.key}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                            <div
+                              style={{
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                background: isCurrent ? '#00D46A' : isPast ? 'rgba(0,212,106,0.20)' : 'rgba(255,255,255,0.06)',
+                                border: isCurrent ? '2px solid #00D46A' : 'none',
+                                boxShadow: isCurrent ? '0 0 10px rgba(0,212,106,0.40)' : 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {isPast && <span className="material-symbols-outlined" style={{ fontSize: '10px', color: '#00D46A', fontVariationSettings: "'FILL' 1" }}>check</span>}
+                              {isCurrent && <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#080C0A' }} />}
+                            </div>
+                            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '6px', fontWeight: 700, color: isCurrent ? '#00D46A' : isPast ? 'rgba(0,212,106,0.50)' : 'rgba(255,255,255,0.15)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                              {phase.label}
+                            </span>
+                          </div>
+                          {idx < phasesList.length - 1 && (
+                            <div style={{ flexGrow: 1, height: '1px', background: idx < phasesList.findIndex(p => p.key === activeEvent.currentPhase) ? 'rgba(0,212,106,0.25)' : 'rgba(255,255,255,0.05)', marginBottom: '14px' }} />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+
+                  {/* Confidence + Safety Delta */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div style={{ padding: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.30)', letterSpacing: '0.10em', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Confidence</span>
+                      <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 900, fontSize: '24px', color: '#F5C842', letterSpacing: '-0.03em' }}>{activeEvent.probability}%</span>
+                    </div>
+                    <div style={{ padding: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.30)', letterSpacing: '0.10em', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Safety Delta</span>
+                      <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 900, fontSize: '24px', color: '#FF4444', letterSpacing: '-0.03em' }}>
+                        ↓ {100 - parseInt(scenDetails.noAction.safety)}pts
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* AI Reasoning */}
+                  <div>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>AI Reasoning</span>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', lineHeight: 1.65, color: 'rgba(255,255,255,0.55)', fontStyle: 'italic', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      "{activeEvent.reasoning}"
+                    </p>
+                  </div>
+
+                  {/* Resources */}
+                  <div>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Recommended Resources</span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '10px' }}>
+                      {scenDetails.resources.map((res, i) => (
+                        <span key={i} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: '#00D46A', background: 'rgba(0,212,106,0.08)', border: '1px solid rgba(0,212,106,0.15)', borderRadius: '9999px', padding: '3px 10px', letterSpacing: '0.04em' }}>
+                          {res}
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Deployment ETA</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.06em' }}>{scenDetails.resolutionTime}</span>
+                    </div>
+                  </div>
+
+                  {/* Playbook Steps */}
+                  <div>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Playbook Steps</span>
+                    <div className="space-y-2 scrollbar-none" style={{ maxHeight: '140px', overflowY: 'auto' }}>
+                      {activeEvent.playbook.steps.map((step, idx) => {
+                        const isExecuted = step.status === 'completed';
+                        const isExecuting = executingEventId === activeEvent.id && idx === currentStepIndex;
+                        return (
+                          <div key={step.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
+                            <span
+                              className={`material-symbols-outlined ${isExecuting ? 'animate-spin' : ''} ${isExecuted ? 'animate-check-in' : ''}`}
+                              style={{ fontSize: '14px', color: isExecuted ? '#00D46A' : isExecuting ? '#F5C842' : 'rgba(255,255,255,0.15)', flexShrink: 0, fontVariationSettings: "'FILL' 1" }}
+                            >
+                              {isExecuted ? 'check_circle' : isExecuting ? 'sync' : 'radio_button_unchecked'}
+                            </span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 500, color: isExecuted ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.75)', textDecoration: isExecuted ? 'line-through' : 'none', lineHeight: 1.4 }}>
+                              {step.action}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="nominal"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25 }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0', textAlign: 'center', gap: '16px' }}
+                >
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(0,212,106,0.08)', border: '1px solid rgba(0,212,106,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#00D46A', fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', color: '#F0F0EE', marginBottom: '6px' }}>System Nominal</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.6 }}>Monitoring stadium operations.<br />No active incidents detected.</p>
+                    <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: '16px' }}>Telemetry Link: GREEN</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Deploy Button */}
+          {activeEvent && (
+            <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(0,212,106,0.08)' }}>
+              {executingEventId === activeEvent.id ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    padding: '14px',
+                    borderRadius: '12px',
+                    background: 'rgba(0,212,106,0.08)',
+                    border: '1px solid rgba(0,212,106,0.15)',
+                  }}
+                >
+                  {!isComplete && <div style={{ width: '12px', height: '12px', border: '2px solid #00D46A', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />}
+                  {isComplete && <span className="material-symbols-outlined animate-check-in" style={{ fontSize: '16px', color: '#00D46A', fontVariationSettings: "'FILL' 1" }}>check_circle</span>}
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.10em', textTransform: 'uppercase' }}>
+                    {isComplete ? 'Playbook Deployed' : 'Executing Playbook...'}
+                  </span>
+                </div>
+              ) : (
+                <button
+                  onClick={handleAuthorize}
+                  className="w-full glow-pulse"
+                  style={{
+                    padding: '14px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #006B3F 0%, #00D46A 100%)',
+                    color: '#080C0A',
+                    cursor: 'pointer',
+                    fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+                    fontWeight: 800,
+                    fontSize: '13px',
+                    letterSpacing: '-0.01em',
+                    transition: 'all 200ms',
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1.10)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1)'}
+                >
+                  Approve & Deploy Playbook →
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Bottom Grid: Timeline (8-col) + Impact Forecast (4-col) */}
-      <div className="grid grid-cols-12 gap-gutter">
-        
-        {/* Timeline / Live Event Feed (8 cols) */}
-        <div className="col-span-12 lg:col-span-8 glass-card rounded-[32px] p-8 border border-white/40 shadow-sm flex flex-col h-[340px]">
-          <div className="flex items-center justify-between mb-6 pb-2 border-b border-outline/10">
-            <h3 className="font-headline-lg text-headline-lg text-on-surface font-bold">Chronological Timeline & Live Event Feed</h3>
-            <span className="font-stats-numeric text-primary bg-primary/5 px-3 py-1 rounded-lg text-sm">Active Feed</span>
+      {/* ── Bottom Grid: Timeline + Impact Forecast ────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+
+        {/* Timeline — 2/3 */}
+        <div
+          className="glass-card"
+          style={{ gridColumn: 'span 2', borderRadius: '20px', padding: '20px', height: '320px', display: 'flex', flexDirection: 'column' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+              <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', color: '#F0F0EE', letterSpacing: '-0.015em' }}>Live Event Feed</h3>
+            </div>
+            <span className="pill-badge pill-badge-green">Active Feed</span>
           </div>
 
-          <div className="flex-grow overflow-y-auto space-y-4 pr-1 scrollbar-thin">
-            {timeline.map((item) => (
-              <div key={item.id} className="flex items-start gap-4 p-4 bg-surface-container-low rounded-xl border border-outline/5 hover:bg-white transition-all shadow-sm">
-                <div className={`p-2 rounded-lg text-white shrink-0 ${item.severity === 'critical' ? 'bg-critical-red' : item.severity === 'warning' ? 'bg-warning-amber' : 'bg-primary'}`}>
-                  <span className="material-symbols-outlined text-sm">
+          <div className="flex-grow overflow-y-auto scrollbar-thin" style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '4px' }}>
+            {timeline.map((item, idx) => (
+              <motion.div
+                key={`${item.id}-${idx}`}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  cursor: 'default',
+                  transition: 'background 150ms',
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.04)'}
+                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.02)'}
+              >
+                <div
+                  style={{
+                    width: '26px',
+                    height: '26px',
+                    borderRadius: '7px',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: item.severity === 'critical' ? 'rgba(255,68,68,0.10)' : item.severity === 'warning' ? 'rgba(255,184,0,0.10)' : 'rgba(0,212,106,0.08)',
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: '13px', fontVariationSettings: "'FILL' 1", color: item.severity === 'critical' ? '#FF4444' : item.severity === 'warning' ? '#FFB800' : '#00D46A' }}
+                  >
                     {item.severity === 'critical' ? 'warning' : item.severity === 'warning' ? 'emergency' : 'info'}
                   </span>
                 </div>
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center mb-1">
-                    <h4 className="font-title-md text-sm font-bold text-on-surface">{item.title}</h4>
-                    <span className="font-stats-numeric text-xs text-on-surface-variant font-semibold">{item.timestamp}</span>
+                <div style={{ flexGrow: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 600, fontSize: '12px', color: '#F0F0EE', lineHeight: 1.3 }}>{item.title}</h4>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 500, color: 'rgba(255,255,255,0.25)', flexShrink: 0, marginLeft: '8px' }}>{item.timestamp}</span>
                   </div>
                   {item.zoneId && (
-                    <span className="block text-[9px] font-mono text-primary font-bold uppercase tracking-wider mb-1">
-                      ZONE: {item.zoneId.toUpperCase()}
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.08em', textTransform: 'uppercase' as const, display: 'block', marginTop: '2px' }}>
+                      Zone: {item.zoneId.toUpperCase()}
                     </span>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
-
             {timeline.length === 0 && (
-              <div className="py-12 text-center text-on-surface-variant font-label-caps text-label-caps">
-                No timeline items logged. Stadium nominal.
+              <div style={{ paddingTop: '48px', textAlign: 'center', color: 'rgba(255,255,255,0.20)' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '28px', display: 'block', marginBottom: '8px', opacity: 0.4 }}>feed</span>
+                <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase' }}>No events logged · Stadium nominal</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Impact Forecast Comparison (4 cols) */}
-        <div className="col-span-12 lg:col-span-4 flex">
-          <div className="glass-card rounded-[32px] p-6 w-full flex flex-col justify-between h-[340px] relative overflow-hidden">
-            <div>
-              <div className="flex items-center gap-3 mb-4 pb-2 border-b border-outline/10">
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>monitoring</span>
-                <h3 className="font-title-md text-sm font-bold text-on-surface">AI Impact Forecast</h3>
+        {/* AI Impact Forecast — 1/3 */}
+        <div
+          className="glass-card"
+          style={{ borderRadius: '20px', padding: '20px', height: '320px', display: 'flex', flexDirection: 'column' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#F5C842', fontVariationSettings: "'FILL' 1" }}>monitoring</span>
+            <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '14px', color: '#F0F0EE', letterSpacing: '-0.015em' }}>AI Impact Forecast</h3>
+          </div>
+
+          {activeEvent && scenDetails ? (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', flexGrow: 1 }}>
+              {/* Without AI */}
+              <div style={{ padding: '14px', borderRadius: '12px', background: 'rgba(255,68,68,0.04)', border: '1px solid rgba(255,68,68,0.12)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: '#FF4444', letterSpacing: '0.10em', textTransform: 'uppercase' }}>Without AI</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexGrow: 1 }}>
+                  {[
+                    { label: 'Safety', value: `↓ ${scenDetails.noAction.safety}` },
+                    { label: 'Wait',   value: `↑ ${scenDetails.noAction.wait}` },
+                    { label: 'Crowd',  value: `↑ ${scenDetails.noAction.crowd}` },
+                    { label: 'Risk',   value: scenDetails.noAction.risk },
+                  ].map(m => (
+                    <div key={m.label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>{m.label}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#FF4444' }}>{m.value}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ borderTop: '1px solid rgba(255,68,68,0.10)', paddingTop: '8px' }}>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: '#FF4444', letterSpacing: '0.06em' }}>AFFECTED: {scenDetails.noAction.affected}</span>
+                </div>
               </div>
 
-              {activeEvent && scenDetails ? (
-                <div className="grid grid-cols-2 gap-4 mt-2">
-                  {/* If No Action Is Taken */}
-                  <div className="bg-rose-50/20 border border-rose-200/50 p-3 rounded-2xl flex flex-col justify-between">
-                    <span className="block text-[8px] font-bold text-critical-red uppercase tracking-wider font-mono mb-2">No Action Taken</span>
-                    <div className="space-y-1.5 text-[10px] text-slate-700">
-                      <div className="flex justify-between">
-                        <span>Safety Score:</span>
-                        <span className="font-bold text-critical-red">↓ {scenDetails.noAction.safety}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Wait Time:</span>
-                        <span className="font-bold text-critical-red">↑ {scenDetails.noAction.wait}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Crowd:</span>
-                        <span className="font-bold text-critical-red">↑ {scenDetails.noAction.crowd}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Risk level:</span>
-                        <span className="font-bold text-critical-red">↑ {scenDetails.noAction.risk}</span>
-                      </div>
+              {/* With ArenaFlow AI */}
+              <motion.div
+                animate={isComplete ? { borderColor: 'rgba(0,212,106,0.30)', background: 'rgba(0,212,106,0.06)' } : {}}
+                transition={{ duration: 0.4 }}
+                style={{ padding: '14px', borderRadius: '12px', background: 'rgba(0,212,106,0.03)', border: '1px solid rgba(0,212,106,0.12)', display: 'flex', flexDirection: 'column', gap: '8px' }}
+              >
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.10em', textTransform: 'uppercase' }}>ArenaFlow AI</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flexGrow: 1 }}>
+                  {[
+                    { label: 'Safety', value: `↑ ${scenDetails.withAI.safety}` },
+                    { label: 'Wait',   value: `↓ ${scenDetails.withAI.wait}` },
+                    { label: 'Crowd',  value: `↓ ${scenDetails.withAI.crowd}` },
+                    { label: 'Risk',   value: 'Reduced' },
+                  ].map(m => (
+                    <div key={m.label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>{m.label}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', fontWeight: 700, color: '#00D46A' }}>{m.value}</span>
                     </div>
-                    <div className="border-t border-rose-100/50 pt-2 mt-2 text-[9px] font-mono text-slate-400 font-bold">
-                      AFFECTED: {scenDetails.noAction.affected}
-                    </div>
-                  </div>
-
-                  {/* With ArenaFlow AI */}
-                  <motion.div 
-                    animate={isComplete ? { scale: [1, 1.03, 1], backgroundColor: 'rgba(236, 253, 245, 0.40)', borderColor: 'rgba(52, 211, 153, 0.6)' } : {}}
-                    transition={{ duration: 0.5 }}
-                    className="bg-emerald-50/10 border border-emerald-200/30 p-3 rounded-2xl flex flex-col justify-between"
-                  >
-                    <span className="block text-[8px] font-bold text-emerald-600 uppercase tracking-wider font-mono mb-2">ArenaFlow AI</span>
-                    <div className="space-y-1.5 text-[10px] text-slate-700">
-                      <div className="flex justify-between">
-                        <span>Safety Score:</span>
-                        <span className="font-bold text-emerald-600">↑ {scenDetails.withAI.safety}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Wait Time:</span>
-                        <span className="font-bold text-emerald-600">↓ {scenDetails.withAI.wait}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Crowd:</span>
-                        <span className="font-bold text-emerald-600">↓ {scenDetails.withAI.crowd}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Risk status:</span>
-                        <span className="font-bold text-emerald-600">Reduced</span>
-                      </div>
-                    </div>
-                    <div className="border-t border-emerald-100/50 pt-2 mt-2 text-[9px] font-mono text-slate-400 font-bold">
-                      RESOLVED: {scenDetails.withAI.time}
-                    </div>
-                  </motion.div>
+                  ))}
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-10 text-center space-y-2">
-                  <span className="material-symbols-outlined text-primary text-3xl opacity-50">check_circle</span>
-                  <p className="text-xs text-on-surface-variant font-medium">Telemetry parameters nominal.</p>
-                  <p className="text-[10px] text-slate-400 font-mono">No active impact forecast required.</p>
+                <div style={{ borderTop: '1px solid rgba(0,212,106,0.12)', paddingTop: '8px' }}>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, color: '#00D46A', letterSpacing: '0.06em' }}>RESOLVED: {scenDetails.withAI.time}</span>
                 </div>
-              )}
+              </motion.div>
             </div>
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexGrow: 1, textAlign: 'center', gap: '10px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#00D46A', opacity: 0.3, fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.30)', lineHeight: 1.6 }}>Telemetry parameters nominal.<br />No active impact forecast required.</p>
+            </div>
+          )}
         </div>
-
       </div>
     </div>
   );

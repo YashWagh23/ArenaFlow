@@ -1,9 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { StadiumState, PredictionEvent, StadiumAnalytics, TimelineItem } from 'shared';
+import type { StadiumState, PredictionEvent, StadiumAnalytics, TimelineItem } from 'shared';
+import { socketService } from '../services/socket.service';
+import { telemetryService } from '../services/telemetry.service';
+import { analyticsService } from '../services/analytics.service';
+import { logger } from '../utils/logger';
+
+// ---------------------------------------------------------------------------
+// Context shape — backward-compatible with all existing consumers
+// ---------------------------------------------------------------------------
 
 interface SocketContextType {
-  socket: Socket | null;
   state: StadiumState | null;
   events: PredictionEvent[];
   analytics: StadiumAnalytics | null;
@@ -11,46 +17,27 @@ interface SocketContextType {
   isPlaying: boolean;
   selectedZoneId: string | null;
   setSelectedZoneId: (id: string | null) => void;
+  /** @deprecated Use useSimulation() hook instead */
   setPlaying: (playing: boolean) => void;
+  /** @deprecated Use useSimulation() hook instead */
   resetSim: () => void;
+  /** @deprecated Use useSimulation() hook instead */
   scrubSim: (minute: number) => void;
+  /** @deprecated Use usePlaybookExecution() hook instead */
   executeStep: (eventId: string, stepId: string) => void;
+  /** @deprecated Use useScenario() hook instead */
   triggerScenario: (scenarioId: string) => void;
   connectionError: boolean;
+  socketUrl: string;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const isDev = import.meta.env.DEV;
-
-// Resolve and sanitize environment variables from contamination (e.g. vite_socket_urlhttps://...)
-const sanitizeUrl = (url: string | undefined, fallback: string): string => {
-  if (!url) return fallback;
-  let clean = url.trim();
-  if (clean.startsWith('VITE_SOCKET_URL')) {
-    clean = clean.substring('VITE_SOCKET_URL'.length);
-  } else if (clean.startsWith('vite_socket_url')) {
-    clean = clean.substring('vite_socket_url'.length);
-  } else if (clean.startsWith('VITE_API_URL')) {
-    clean = clean.substring('VITE_API_URL'.length);
-  } else if (clean.startsWith('vite_api_url')) {
-    clean = clean.substring('vite_api_url'.length);
-  }
-  return clean;
-};
-
-const API_URL = sanitizeUrl(
-  import.meta.env.VITE_API_URL,
-  isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app'
-);
-
-const SOCKET_URL = sanitizeUrl(
-  import.meta.env.VITE_SOCKET_URL,
-  isDev ? 'http://localhost:5000' : 'https://arena-flow-backend.vercel.app'
-);
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [state, setState] = useState<StadiumState | null>(null);
   const [events, setEvents] = useState<PredictionEvent[]>([]);
   const [analytics, setAnalytics] = useState<StadiumAnalytics | null>(null);
@@ -60,85 +47,100 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [connectionError, setConnectionError] = useState(false);
 
   useEffect(() => {
-    console.log('[ArenaFlow Telemetry] Resolved SOCKET_URL:', SOCKET_URL);
-    const newSocket = io(SOCKET_URL, {
-      transports: ['websocket'],
-      reconnectionAttempts: 3,
-      timeout: 5000,
-    });
+    logger.info('Connecting to telemetry server', socketService.url);
 
-    setSocket(newSocket);
+    socketService.connect();
 
-    newSocket.on('connect', () => {
+    const unsubscribeFns: Array<() => void> = [];
+
+    // Connection lifecycle
+    const socket = socketService.getSocket();
+
+    const onConnect = () => {
+      logger.info('Socket connected');
       setConnectionError(false);
-    });
-
-    newSocket.on('connect_error', () => {
+    };
+    const onConnectError = (err: Error) => {
+      logger.warn('Socket connection error', err.message);
       setConnectionError(true);
-    });
-
-    newSocket.on('reconnect_failed', () => {
+    };
+    const onReconnect = () => {
+      logger.info('Socket reconnected');
+      setConnectionError(false);
+    };
+    const onReconnectFailed = () => {
+      logger.error('Socket reconnect failed — all attempts exhausted');
       setConnectionError(true);
-    });
+    };
+    const onDisconnect = (reason: string) => {
+      logger.warn('Socket disconnected', reason);
+    };
 
-    newSocket.on('telemetry_tick', (data: { 
-      state: StadiumState; 
-      events: PredictionEvent[]; 
-      isPlaying: boolean; 
-      analytics?: StadiumAnalytics;
-      timeline?: TimelineItem[];
-    }) => {
+    socket.on('connect', onConnect);
+    socket.on('connect_error', onConnectError);
+    socket.on('reconnect', onReconnect);
+    socket.on('reconnect_failed', onReconnectFailed);
+    socket.on('disconnect', onDisconnect);
+
+    // Telemetry tick
+    const unsubTick = telemetryService.onTick((data) => {
       setState(data.state);
       setEvents(data.events);
       setIsPlaying(data.isPlaying);
-      if (data.analytics) setAnalytics(data.analytics);
       if (data.timeline) setTimeline(data.timeline);
       setConnectionError(false);
     });
+    unsubscribeFns.push(unsubTick);
 
-    newSocket.on('incident_added', (item: TimelineItem) => {
-      setTimeline(prev => [item, ...prev]);
-    });
+    // Analytics updates (embedded in tick payload via analyticsService)
+    const unsubAnalytics = analyticsService.onAnalyticsUpdate((a) => setAnalytics(a));
+    unsubscribeFns.push(unsubAnalytics);
+
+    // Incident additions
+    const unsubIncident = telemetryService.onIncidentAdded((item) =>
+      setTimeline((prev) => [item, ...prev])
+    );
+    unsubscribeFns.push(unsubIncident);
 
     return () => {
-      newSocket.disconnect();
+      socket.off('connect', onConnect);
+      socket.off('connect_error', onConnectError);
+      socket.off('reconnect', onReconnect);
+      socket.off('reconnect_failed', onReconnectFailed);
+      socket.off('disconnect', onDisconnect);
+      unsubscribeFns.forEach((fn) => fn());
+      socketService.disconnect();
     };
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // Legacy action methods — kept for backward compatibility
+  // New code should use useSimulation(), useScenario(), usePlaybookExecution()
+  // ---------------------------------------------------------------------------
+
   const setPlaying = (playing: boolean) => {
-    if (socket) {
-      socket.emit('simulation_control', playing ? 'play' : 'pause');
-    }
+    socketService.emit('simulation_control', playing ? 'play' : 'pause');
   };
 
   const resetSim = () => {
-    if (socket) {
-      socket.emit('simulation_control', 'reset');
-    }
+    socketService.emit('simulation_control', 'reset');
   };
 
   const scrubSim = (minute: number) => {
-    if (socket) {
-      socket.emit('scrub_timeline', minute);
-    }
+    socketService.emit('scrub_timeline', minute);
   };
 
   const executeStep = (eventId: string, stepId: string) => {
-    if (socket) {
-      socket.emit('execute_step', { eventId, stepId });
-    }
+    socketService.emit('execute_step', { eventId, stepId });
   };
 
   const triggerScenario = (scenarioId: string) => {
-    if (socket) {
-      socket.emit('trigger_scenario', scenarioId);
-    }
+    socketService.emit('trigger_scenario', scenarioId);
   };
 
   return (
     <SocketContext.Provider
       value={{
-        socket,
         state,
         events,
         analytics,
@@ -152,12 +154,17 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         executeStep,
         triggerScenario,
         connectionError,
+        socketUrl: socketService.url,
       }}
     >
       {children}
     </SocketContext.Provider>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
 
 export function useTelemetry() {
   const context = useContext(SocketContext);

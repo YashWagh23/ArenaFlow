@@ -1,26 +1,65 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import compress from '@fastify/compress';
+import rateLimit from '@fastify/rate-limit';
 import { Server as SocketServer } from 'socket.io';
 import dotenv from 'dotenv';
-import { SimulationEngine } from './simulation/simEngine.js';
 
+// Load env vars before importing modules that depend on them
 dotenv.config();
+
+import { env } from './config/env.js';
+import { SimulationEngine } from './simulation/SimulationEngine.js';
+import { createLogger } from './utils/logger.js';
+import {
+  SimulationControlSchema,
+  ScrubTimelineSchema,
+  ExecuteStepSchema,
+  TriggerScenarioSchema,
+} from './validation/socket.schemas.js';
+
+const logger = createLogger('Server');
 
 const fastify = Fastify({ logger: true });
 
-// Register CORS
-fastify.register(cors, {
-  origin: '*',
-});
+// ---------------------------------------------------------------------------
+// Health Endpoints
+// ---------------------------------------------------------------------------
 
 let simEngine: SimulationEngine | null = null;
+let io: SocketServer;
 
-// Basic Health Check Endpoint
-fastify.get('/health', async () => {
-  return { status: 'healthy', timestamp: new Date().toISOString() };
+fastify.get('/health', async () => ({
+  status: 'healthy',
+  uptime: Math.round(process.uptime()),
+  timestamp: new Date().toISOString(),
+  version: process.env.npm_package_version ?? '1.0.0',
+}));
+
+fastify.get('/ready', async (_, reply) => {
+  if (!simEngine) {
+    return reply.code(503).send({ ready: false, reason: 'Simulation engine not initialized' });
+  }
+  return { ready: true, simulationRunning: simEngine.isPlaying };
 });
 
-// Reset Endpoint
+fastify.get('/metrics', async (_, reply) => {
+  if (!simEngine) {
+    return reply.code(503).send({ error: 'Engine not initialized' });
+  }
+  const state = simEngine.getState();
+  return {
+    connectedClients: io?.engine.clientsCount ?? 0,
+    currentMinute: simEngine.currentElapsedMinute,
+    safetyScore: state.state?.globalSafetyScore ?? 0,
+    activeIncidents: state.events?.filter((e) => !e.resolved).length ?? 0,
+    isPlaying: simEngine.isPlaying,
+    timestamp: new Date().toISOString(),
+  };
+});
+
+// Existing REST endpoints — unchanged
 fastify.post('/api/simulation/reset', async () => {
   if (simEngine) {
     simEngine.reset();
@@ -29,7 +68,6 @@ fastify.post('/api/simulation/reset', async () => {
   return { error: 'engine not initialized' };
 });
 
-// Get Current State Endpoint
 fastify.get('/api/simulation/state', async () => {
   if (simEngine) {
     return simEngine.getState();
@@ -37,73 +75,175 @@ fastify.get('/api/simulation/state', async () => {
   return { error: 'engine not initialized' };
 });
 
-const PORT = Number(process.env.PORT) || 5000;
+// ---------------------------------------------------------------------------
+// Startup
+// ---------------------------------------------------------------------------
 
 const start = async () => {
   try {
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
-    
-    // Attach Socket.io to the Fastify HTTP server instance
-    const io = new SocketServer(fastify.server, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-      },
+    // Register plugins inside async function — top-level await not supported in NodeNext
+    await fastify.register(helmet, { contentSecurityPolicy: false });
+    await fastify.register(compress);
+    await fastify.register(cors, { origin: env.CORS_ORIGIN });
+    await fastify.register(rateLimit, {
+      max: 120,
+      timeWindow: '1 minute',
+      errorResponseBuilder: () => ({
+        statusCode: 429,
+        error: 'Too Many Requests',
+        message: 'Rate limit exceeded. Please slow down.',
+      }),
+    });
+
+    await fastify.listen({ port: env.PORT, host: '0.0.0.0' });
+
+    io = new SocketServer(fastify.server, {
+      cors: { origin: env.CORS_ORIGIN, methods: ['GET', 'POST'] },
+      maxHttpBufferSize: 1e5, // 100 KB max payload per socket message
     });
 
     simEngine = new SimulationEngine(io);
     simEngine.start();
 
     io.on('connection', (socket) => {
-      fastify.log.info(`Client connected: ${socket.id}`);
-      
-      // Push initial state immediately on connection
-      if (simEngine) {
-        socket.emit('telemetry_tick', simEngine.getState());
-      }
+      logger.info('Client connected', { socketId: socket.id });
 
-      socket.on('simulation_control', (action: 'play' | 'pause' | 'reset') => {
-        if (!simEngine) return;
-        if (action === 'play') simEngine.resume();
-        if (action === 'pause') simEngine.pause();
-        if (action === 'reset') simEngine.reset();
-      });
+      // Push current state immediately on connect
+      socket.emit('telemetry_tick', simEngine!.getState());
 
-      socket.on('scrub_timeline', (minute: number) => {
-        if (simEngine) {
-          simEngine.scrub(minute);
+      // ------------------------------------------------------------------
+      // simulation_control
+      // ------------------------------------------------------------------
+      socket.on('simulation_control', (payload: unknown) => {
+        const parsed = SimulationControlSchema.safeParse(payload);
+        if (!parsed.success) {
+          logger.warn('Invalid simulation_control payload', {
+            socketId: socket.id,
+            error: parsed.error.message,
+          });
+          return;
+        }
+        const action = parsed.data;
+        try {
+          if (action === 'play') simEngine!.resume();
+          else if (action === 'pause') simEngine!.pause();
+          else if (action === 'reset') simEngine!.reset();
+        } catch (err: unknown) {
+          logger.error('simulation_control handler error', {
+            action,
+            error: err instanceof Error ? err.message : String(err),
+          });
         }
       });
 
-      socket.on('execute_step', (data: { eventId: string; stepId: string }) => {
-        if (simEngine) {
-          simEngine.executePlaybookStep(data.eventId, data.stepId);
+      // ------------------------------------------------------------------
+      // scrub_timeline
+      // ------------------------------------------------------------------
+      socket.on('scrub_timeline', (payload: unknown) => {
+        const parsed = ScrubTimelineSchema.safeParse(payload);
+        if (!parsed.success) {
+          logger.warn('Invalid scrub_timeline payload', {
+            socketId: socket.id,
+            error: parsed.error.message,
+          });
+          return;
+        }
+        try {
+          simEngine!.scrub(parsed.data);
+        } catch (err: unknown) {
+          logger.error('scrub_timeline handler error', {
+            error: err instanceof Error ? err.message : String(err),
+          });
         }
       });
 
-      socket.on('trigger_scenario', (scenarioId: string) => {
-        if (simEngine) {
-          simEngine.triggerScenario(scenarioId);
+      // ------------------------------------------------------------------
+      // execute_step
+      // ------------------------------------------------------------------
+      socket.on('execute_step', (payload: unknown) => {
+        const parsed = ExecuteStepSchema.safeParse(payload);
+        if (!parsed.success) {
+          logger.warn('Invalid execute_step payload', {
+            socketId: socket.id,
+            error: parsed.error.message,
+          });
+          return;
+        }
+        try {
+          simEngine!.executePlaybookStep(parsed.data.eventId, parsed.data.stepId);
+        } catch (err: unknown) {
+          logger.error('execute_step handler error', {
+            error: err instanceof Error ? err.message : String(err),
+          });
         }
       });
 
-      socket.on('request_briefing', async () => {
-        if (simEngine) {
-          const briefing = await simEngine.generateExecutiveBriefing();
-          socket.emit('briefing_generated', briefing);
+      // ------------------------------------------------------------------
+      // trigger_scenario
+      // ------------------------------------------------------------------
+      socket.on('trigger_scenario', (payload: unknown) => {
+        const parsed = TriggerScenarioSchema.safeParse(payload);
+        if (!parsed.success) {
+          logger.warn('Invalid trigger_scenario payload', {
+            socketId: socket.id,
+            error: parsed.error.message,
+          });
+          return;
         }
+        simEngine!.triggerScenario(parsed.data).catch((err: unknown) => {
+          logger.error('trigger_scenario handler error', {
+            scenarioId: parsed.data,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        });
       });
 
-      socket.on('disconnect', () => {
-        fastify.log.info(`Client disconnected: ${socket.id}`);
+      // ------------------------------------------------------------------
+      // request_briefing
+      // ------------------------------------------------------------------
+      socket.on('request_briefing', () => {
+        simEngine!
+          .generateExecutiveBriefing()
+          .then((briefing) => socket.emit('briefing_generated', briefing))
+          .catch((err: unknown) => {
+            logger.error('request_briefing handler error', {
+              error: err instanceof Error ? err.message : String(err),
+            });
+          });
+      });
+
+      socket.on('disconnect', (reason) => {
+        logger.info('Client disconnected', { socketId: socket.id, reason });
       });
     });
 
-    fastify.log.info(`Socket.io server attached to Fastify running on port ${PORT}`);
-  } catch (err) {
-    fastify.log.error(err);
+    logger.info('Server ready', { port: env.PORT, corsOrigin: env.CORS_ORIGIN });
+  } catch (err: unknown) {
+    logger.error('Startup failed', { error: err instanceof Error ? err.message : String(err) });
     process.exit(1);
   }
 };
+
+// ---------------------------------------------------------------------------
+// Graceful Shutdown
+// ---------------------------------------------------------------------------
+
+const shutdown = async (signal: string) => {
+  logger.info(`Received ${signal} — shutting down gracefully`);
+  try {
+    simEngine?.stop();
+    await fastify.close();
+    logger.info('Shutdown complete');
+    process.exit(0);
+  } catch (err: unknown) {
+    logger.error('Error during shutdown', {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    process.exit(1);
+  }
+};
+
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));
 
 start();

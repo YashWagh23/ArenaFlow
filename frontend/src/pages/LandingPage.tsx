@@ -2,13 +2,131 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/* ── Inline Stadium SVG — aerial pitch view ───────────── */
+function StadiumAerial() {
+  return (
+    <svg
+      viewBox="0 0 900 500"
+      fill="none"
+      style={{ width: '100%', height: '100%', opacity: 1 }}
+      aria-hidden="true"
+    >
+      {/* Outer stadium bowl */}
+      <ellipse cx="450" cy="250" rx="440" ry="235" stroke="rgba(0,212,106,0.12)" strokeWidth="1"/>
+      <ellipse cx="450" cy="250" rx="400" ry="210" stroke="rgba(0,212,106,0.08)" strokeWidth="0.5"/>
+      <ellipse cx="450" cy="250" rx="360" ry="188" stroke="rgba(0,212,106,0.06)" strokeWidth="0.5"/>
+
+      {/* Pitch rectangle */}
+      <rect x="100" y="90" width="700" height="320" rx="4" stroke="rgba(0,212,106,0.20)" strokeWidth="1"/>
+
+      {/* Midfield line */}
+      <line x1="450" y1="90" x2="450" y2="410" stroke="rgba(0,212,106,0.15)" strokeWidth="0.7"/>
+
+      {/* Center circle */}
+      <circle cx="450" cy="250" r="70" stroke="rgba(0,212,106,0.18)" strokeWidth="0.7"/>
+
+      {/* Center spot */}
+      <circle cx="450" cy="250" r="4" fill="rgba(0,212,106,0.40)"/>
+
+      {/* Left penalty area */}
+      <rect x="100" y="160" width="110" height="180" rx="2" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6"/>
+      {/* Left goal area */}
+      <rect x="100" y="200" width="48" height="100" rx="1" stroke="rgba(0,212,106,0.10)" strokeWidth="0.5"/>
+      {/* Left penalty spot */}
+      <circle cx="210" cy="250" r="3" fill="rgba(0,212,106,0.30)"/>
+      {/* Left arc */}
+      <path d="M 210 180 A 70 70 0 0 1 210 320" stroke="rgba(0,212,106,0.10)" strokeWidth="0.6" fill="none"/>
+
+      {/* Right penalty area */}
+      <rect x="690" y="160" width="110" height="180" rx="2" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6"/>
+      {/* Right goal area */}
+      <rect x="752" y="200" width="48" height="100" rx="1" stroke="rgba(0,212,106,0.10)" strokeWidth="0.5"/>
+      {/* Right penalty spot */}
+      <circle cx="690" cy="250" r="3" fill="rgba(0,212,106,0.30)"/>
+      {/* Right arc */}
+      <path d="M 690 180 A 70 70 0 0 0 690 320" stroke="rgba(0,212,106,0.10)" strokeWidth="0.6" fill="none"/>
+
+      {/* Corner arcs */}
+      <path d="M 100 100 A 12 12 0 0 1 112 90" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 790 90 A 12 12 0 0 1 800 100" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 800 400 A 12 12 0 0 1 790 410" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 112 410 A 12 12 0 0 1 100 400" stroke="rgba(0,212,106,0.14)" strokeWidth="0.6" fill="none"/>
+
+      {/* Stadium seating rows (abstract) */}
+      {[1,2,3,4,5].map(i => (
+        <ellipse key={i} cx="450" cy="250"
+          rx={355 + i*6} ry={183 + i*5}
+          stroke={`rgba(0,212,106,${0.025 - i*0.004})`} strokeWidth="0.4" fill="none"
+        />
+      ))}
+
+      {/* Floodlight towers — 4 corners */}
+      {[[95, 85], [805, 85], [95, 415], [805, 415]].map(([x, y], i) => (
+        <g key={i}>
+          <circle cx={x} cy={y} r="6" fill="rgba(0,212,106,0.15)" stroke="rgba(0,212,106,0.30)" strokeWidth="0.8"/>
+          <circle cx={x} cy={y} r="3" fill="rgba(0,212,106,0.50)"/>
+          {/* Glow */}
+          <circle cx={x} cy={y} r="14" fill="rgba(0,212,106,0.06)"/>
+        </g>
+      ))}
+
+      {/* Crowd density heatmap — abstract colored zones */}
+      <ellipse cx="450" cy="95" rx="160" ry="20" fill="rgba(0,212,106,0.06)"/>
+      <ellipse cx="450" cy="405" rx="160" ry="20" fill="rgba(0,212,106,0.06)"/>
+      <ellipse cx="108" cy="250" rx="20" ry="90" fill="rgba(0,212,106,0.05)"/>
+      <ellipse cx="792" cy="250" rx="20" ry="90" fill="rgba(0,212,106,0.05)"/>
+    </svg>
+  );
+}
+
+/* ── Walkthrough steps data — preserved from original ─── */
+const walkthroughSteps = [
+  {
+    title: 'Normal Stadium Operations',
+    description: 'The stadium is running normally. Crowd flows are optimal across all concourses, and the overall Safety Score is at 98%. ArenaFlow monitors every zone in real time.',
+    icon: 'stadium',
+    badge: 'SAFETY SCORE: 98%',
+    badgeColor: '#00D46A',
+  },
+  {
+    title: 'Unexpected Incident Detected',
+    description: 'An unexpected Metro Delay occurs, causing rail transport capacity to drop. Fans begin aggregating and congestion builds rapidly at outer transit platforms.',
+    icon: 'train',
+    badge: 'TRANSIT TERMINAL SURGE',
+    badgeColor: '#FFB800',
+  },
+  {
+    title: 'AI Prediction Anomaly',
+    description: 'ArenaFlow processes real-time sensors. AI predicts crowd choke risks near Gate C, 4 minutes before a delay threshold is breached. Confidence: 94%.',
+    icon: 'smart_toy',
+    badge: '94% CONFIDENCE INDEX',
+    badgeColor: '#F5C842',
+  },
+  {
+    title: 'Digital Twin Response',
+    description: 'The Digital Twin map highlights affected sectors in real time. Safety Score indicators decline, and the AI Copilot compiles recommended mitigation steps.',
+    icon: 'language',
+    badge: 'SAFETY WARNING ACTIVE',
+    badgeColor: '#FF4444',
+  },
+  {
+    title: 'AI Playbook Execution',
+    description: 'The operator deploys the AI playbook. Transit gates are adjusted, shuttle buses rerouted, and crowd flow is balanced. The incident resolves — safety score recovers.',
+    icon: 'check_circle',
+    badge: 'RESOLUTION NOMINAL',
+    badgeColor: '#00D46A',
+  },
+];
+
+/* ── Main Landing Page ───────────────────────────────── */
 export default function LandingPage() {
   const navigate = useNavigate();
-  const trophyRef = useRef<HTMLImageElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [utcClock, setUtcClock] = useState('');
+  const heroRef = useRef<HTMLDivElement>(null);
 
+  // Live UTC clock
   useEffect(() => {
     const tick = () => {
       const now = new Date();
@@ -22,15 +140,15 @@ export default function LandingPage() {
     return () => clearInterval(id);
   }, []);
 
+  // Subtle parallax on hero — preserved from original
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const trophy = trophyRef.current;
-      if (!trophy) return;
-      const x = (window.innerWidth - e.pageX * 2) / 100;
-      const y = (window.innerHeight - e.pageY * 2) / 100;
-      trophy.style.transform = `translate(${x}px, calc(-50% + ${y}px))`;
+      const el = heroRef.current;
+      if (!el) return;
+      const x = (window.innerWidth / 2 - e.pageX) / 60;
+      const y = (window.innerHeight / 2 - e.pageY) / 80;
+      el.style.transform = `translate(${x}px, ${y}px)`;
     };
-
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
@@ -38,380 +156,532 @@ export default function LandingPage() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden select-none"
-      style={{ backgroundColor: '#F5F5F7' }}
+      style={{ background: '#080C0A' }}
     >
-      {/* ── Pitch Geometry Overlay ── */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Grid pattern */}
+
+      {/* ── Floodlight Beams ── */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 1000px 700px at -5% -10%, rgba(0,212,106,0.10) 0%, transparent 60%),
+            radial-gradient(ellipse 700px 600px at 105% -8%, rgba(0,212,106,0.07) 0%, transparent 55%),
+            radial-gradient(ellipse 500px 800px at 50% 110%, rgba(0,212,106,0.04) 0%, transparent 60%)
+          `,
+        }}
+      />
+
+      {/* ── Pitch grid ── */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(0,212,106,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,106,0.035) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          opacity: 0.7,
+        }}
+      />
+
+      {/* ── Stadium silhouette — right half ── */}
+      <div
+        ref={heroRef}
+        className="absolute pointer-events-none z-5"
+        style={{
+          right: '-4%',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '58%',
+          height: '80%',
+          transition: 'transform 0.1s ease-out',
+        }}
+      >
+        <StadiumAerial />
+        {/* Fade gradient over SVG — left side */}
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage:
-              'linear-gradient(#006b3f 1px, transparent 1px), linear-gradient(90deg, #006b3f 1px, transparent 1px)',
-            backgroundSize: '100px 100px',
-            opacity: 0.03,
+            background: 'linear-gradient(to right, #080C0A 0%, rgba(8,12,10,0.60) 25%, rgba(8,12,10,0) 60%)',
           }}
         />
-        {/* Center circle ghost */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-primary/10 rounded-full" />
+        {/* Fade gradient over SVG — bottom */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to top, #080C0A 0%, rgba(8,12,10,0) 40%)',
+          }}
+        />
       </div>
 
-      {/* ── Top Navigation Bar ── */}
+      {/* ── Top Navigation ── */}
       <nav
-        className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 border-b border-white/30 shadow-sm"
-        style={{ background: 'rgba(249,249,251,0.80)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
+        className="fixed top-0 left-0 w-full z-50 flex justify-between items-center"
+        style={{
+          height: '52px',
+          padding: '0 40px',
+          background: 'rgba(8,12,10,0.70)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+        }}
       >
-        {/* Left: Logo + Home */}
-        <div className="flex items-center gap-8">
-          <span className="font-headline-lg text-headline-lg font-bold text-primary tracking-tight">
-            ArenaFlow
-          </span>
-          <div className="hidden md:flex items-center gap-6">
-            <a
-              href="#"
-              className="text-primary font-semibold border-b-2 border-primary py-1 text-sm"
-            >
-              Home
-            </a>
+        {/* Wordmark */}
+        <div className="flex items-center gap-2.5">
+          <div
+            style={{
+              width: '20px', height: '20px',
+              borderRadius: '5px',
+              background: 'linear-gradient(135deg, #006B3F, #00D46A)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '12px', color: '#080C0A', fontVariationSettings: "'FILL' 1" }}>stadium</span>
           </div>
+          <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '14px', letterSpacing: '-0.025em', color: '#F0F0EE' }}>ArenaFlow</span>
         </div>
 
-        {/* Right: Live UTC Clock */}
-        <div className="flex items-center gap-3">
-          <span className="font-stats-numeric text-primary" style={{ fontSize: '14px' }}>
-            {utcClock}
-          </span>
+        {/* Right: clock + status */}
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em' }}>
+              {utcClock}
+            </span>
+          </div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.50)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              letterSpacing: '-0.01em',
+              padding: '6px 12px',
+              borderRadius: '6px',
+              transition: 'color 150ms, background 150ms',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.color = '#F0F0EE';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.50)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'none';
+            }}
+          >
+            Dashboard →
+          </button>
         </div>
       </nav>
 
-      {/* ── Hero Section ── */}
-      <main className="relative h-screen flex items-center px-container-padding overflow-hidden">
+      {/* ── Hero Content ── */}
+      <main
+        className="relative h-screen flex items-center"
+        style={{ paddingLeft: '80px', paddingRight: '60%' }}
+      >
+        <div className="relative z-20 flex flex-col" style={{ maxWidth: '620px' }}>
 
-        {/* Trophy Image Asset — right side */}
-        <div
-          className="absolute right-0 top-0 h-full z-10 flex items-center justify-center"
-          style={{ width: '66.666%', transform: 'translateX(3rem)', opacity: 0.9 }}
-        >
-          <div className="relative w-full h-full">
-            {/* Trophy */}
-            <img
-              ref={trophyRef}
-              alt="FIFA World Cup Trophy Monumental Detail"
-              src="/trophy.png"
-              className="absolute right-0 top-1/2 w-auto object-contain mix-blend-multiply transition-all duration-1000 hover:scale-105"
-              style={{
-                height: '120%',
-                transform: 'translateY(-50%)',
-                filter: 'drop-shadow(0 0 40px rgba(0,107,63,0.15))',
-              }}
-            />
-            {/* Masking radial gradient overlay — fades trophy into background */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(circle at 70% 50%, rgba(255,255,255,0) 0%, rgba(245,245,247,1) 100%)',
-              }}
-            />
-          </div>
-        </div>
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ marginBottom: '28px' }}
+          >
+            <div className="inline-flex items-center gap-2" style={{ padding: '5px 12px', border: '1px solid rgba(0,212,106,0.20)', borderRadius: '9999px', background: 'rgba(0,212,106,0.06)' }}>
+              <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', color: '#00D46A', textTransform: 'uppercase' }}>
+                Live · FIFA 2026 · AI Stadium Operations
+              </span>
+            </div>
+          </motion.div>
 
-        {/* Content Overlay — left side */}
-        <div className="relative z-20 max-w-2xl">
-
-          {/* Eyebrow labels */}
-          <div className="mb-6 flex items-center gap-3">
-            <span
-              className="text-primary px-3 py-1 rounded-full border border-primary/20 font-label-caps text-label-caps"
-              style={{ background: 'rgba(0,107,63,0.10)' }}
-            >
-              Stadium Operating System
-            </span>
-            <span className="font-label-caps text-label-caps" style={{ color: 'rgba(62,74,65,0.60)' }}>
-              FIFA 2026 OFFICIAL PARTNER
-            </span>
-          </div>
-
-          {/* Main headline */}
-          <h1 className="font-headline-xl text-headline-xl text-graphite mb-6 leading-tight max-w-xl">
-            The Operating System for the{' '}
-            <span className="text-primary italic font-bold">World's Game.</span>
-          </h1>
+          {/* Headline — massive editorial typography */}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            style={{
+              fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(52px, 6.5vw, 96px)',
+              lineHeight: 0.96,
+              letterSpacing: '-0.05em',
+              color: '#F0F0EE',
+              marginBottom: '24px',
+            }}
+          >
+            Stadium<br />
+            Intelligence.<br />
+            <span style={{ color: '#00D46A' }}>At Scale.</span>
+          </motion.h1>
 
           {/* Subtitle */}
-          <p className="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-md leading-relaxed">
-            Precision command for the global stage. Manage crowds, logistics, and incident response with surgical efficiency.
-          </p>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 400,
+              fontSize: '17px',
+              lineHeight: 1.7,
+              color: 'rgba(240,240,238,0.50)',
+              maxWidth: '440px',
+              marginBottom: '40px',
+            }}
+          >
+            ArenaFlow gives stadium operators real-time AI assistance,
+            predictive incident response, and operational awareness
+            during the world's largest sporting events.
+          </motion.p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '60px' }}
+          >
+            {/* Primary CTA */}
             <button
+              id="launch-arenaflow-btn"
               onClick={() => navigate('/dashboard')}
-              className="group relative px-8 py-4 bg-primary text-on-primary rounded-full font-title-md text-title-md flex items-center gap-3 transition-all duration-300 active:scale-95"
+              className="group flex items-center gap-2.5"
               style={{
-                boxShadow: '0 4px 16px rgba(0,107,63,0.20)',
+                padding: '13px 24px',
+                background: '#00D46A',
+                color: '#080C0A',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: '14px',
+                letterSpacing: '-0.01em',
+                boxShadow: '0 0 0 1px rgba(0,212,106,0.50), 0 4px 20px rgba(0,212,106,0.25)',
+                transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 28px rgba(0,107,63,0.30)';
+                const el = e.currentTarget as HTMLButtonElement;
+                el.style.background = '#1AE078';
+                el.style.boxShadow = '0 0 0 1px rgba(0,212,106,0.60), 0 8px 32px rgba(0,212,106,0.35)';
+                el.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(0,107,63,0.20)';
+                const el = e.currentTarget as HTMLButtonElement;
+                el.style.background = '#00D46A';
+                el.style.boxShadow = '0 0 0 1px rgba(0,212,106,0.50), 0 4px 20px rgba(0,212,106,0.25)';
+                el.style.transform = 'translateY(0)';
               }}
             >
               Launch ArenaFlow
-              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
+              <span className="material-symbols-outlined" style={{ fontSize: '17px', fontVariationSettings: "'FILL' 1" }}>arrow_forward</span>
             </button>
+
+            {/* Ghost CTA */}
             <button
-              onClick={() => {
-                setActiveStep(0);
-                setModalOpen(true);
-              }}
-              className="px-8 py-4 rounded-full font-title-md text-title-md text-on-surface hover:bg-white/60 transition-all duration-300 active:scale-95 shadow-sm"
+              onClick={() => { setActiveStep(0); setModalOpen(true); }}
               style={{
-                background: 'rgba(250,250,251,0.40)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255,255,255,1)',
+                padding: '12px 20px',
+                background: 'transparent',
+                color: 'rgba(240,240,238,0.55)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 500,
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLButtonElement;
+                el.style.color = '#F0F0EE';
+                el.style.borderColor = 'rgba(255,255,255,0.20)';
+                el.style.background = 'rgba(255,255,255,0.04)';
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLButtonElement;
+                el.style.color = 'rgba(240,240,238,0.55)';
+                el.style.borderColor = 'rgba(255,255,255,0.10)';
+                el.style.background = 'transparent';
               }}
             >
-              Watch Demo Flow
+              <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>play_circle</span>
+              Watch Demo
             </button>
-          </div>
+          </motion.div>
 
-          {/* Dashboard Preview Stats */}
-          <div className="mt-20 grid grid-cols-3 gap-6">
-            {/* Stat 1: Peak Capacity */}
-            <div
-              className="p-4 rounded-xl border border-white/40 shadow-sm flex flex-col gap-2"
-              style={{
-                background: 'rgba(255,255,255,0.80)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.30)',
-              }}
-            >
-              <span className="font-label-caps text-label-caps text-on-surface-variant/70 uppercase">
-                Peak Capacity
-              </span>
-              <div className="flex items-baseline gap-1">
-                <span className="font-stats-numeric text-stats-numeric text-primary">82,400</span>
-                <span className="text-primary text-[12px] material-symbols-outlined">trending_up</span>
-              </div>
-            </div>
-
-            {/* Stat 2: Logistics Status */}
-            <div
-              className="p-4 rounded-xl border border-white/40 shadow-sm flex flex-col gap-2"
-              style={{
-                background: 'rgba(255,255,255,0.80)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.30)',
-              }}
-            >
-              <span className="font-label-caps text-label-caps text-on-surface-variant/70 uppercase">
-                Logistics Status
-              </span>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="font-title-md text-title-md text-graphite">Nominal</span>
-              </div>
-            </div>
-
-            {/* Stat 3: Active Incidents */}
-            <div
-              className="p-4 rounded-xl border border-white/40 shadow-sm flex flex-col gap-2"
-              style={{
-                background: 'rgba(255,255,255,0.80)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.30)',
-              }}
-            >
-              <span className="font-label-caps text-label-caps text-on-surface-variant/70 uppercase">
-                Active Incidents
-              </span>
-              <div className="flex items-baseline gap-1">
-                <span className="font-stats-numeric text-stats-numeric text-critical-red">0</span>
-                <span
-                  className="text-on-surface-variant/50 text-[12px] material-symbols-outlined"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  check_circle
+          {/* Stats row — dark floating chips */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.50 }}
+            style={{ display: 'flex', gap: '12px' }}
+          >
+            {[
+              { value: '82,400', label: 'Peak Capacity' },
+              { value: 'Nominal', label: 'Logistics Status', dot: true },
+              { value: '0', label: 'Active Incidents', check: true },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: '14px 18px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  backdropFilter: 'blur(12px)',
+                }}
+              >
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
+                  {stat.label}
                 </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {stat.dot && <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#00D46A' }} />}
+                  <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontSize: '18px', fontWeight: 800, letterSpacing: '-0.025em', color: '#F0F0EE', lineHeight: 1 }}>
+                    {stat.value}
+                  </span>
+                  {stat.check && <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#00D46A', fontVariationSettings: "'FILL' 1" }}>check_circle</span>}
+                </div>
               </div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
         </div>
       </main>
 
-      {/* Walkthrough Demo Modal */}
+      {/* ── Demo Walkthrough Modal — preserved logic, redesigned ── */}
       <AnimatePresence>
         {modalOpen && (
-          <div className="fixed inset-0 bg-black/45 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center"
+            style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)' }}
+            onClick={e => { if (e.target === e.currentTarget) setModalOpen(false); }}
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.97, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white/95 border border-white max-w-xl w-full rounded-[32px] p-8 shadow-2xl relative flex flex-col gap-6"
-              style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+              exit={{ opacity: 0, scale: 0.97, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{
+                width: '100%',
+                maxWidth: '520px',
+                background: '#0D1410',
+                border: '1px solid rgba(255,255,255,0.09)',
+                borderRadius: '24px',
+                boxShadow: '0 40px 120px rgba(0,0,0,0.70)',
+                overflow: 'hidden',
+              }}
             >
-              {/* Close Button */}
-              <button
-                onClick={() => setModalOpen(false)}
-                className="absolute top-6 right-6 text-on-surface-variant hover:text-primary transition-colors h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center border border-outline/10 shadow-sm hover:scale-105 active:scale-95 duration-200"
+              {/* Modal header */}
+              <div
+                style={{
+                  padding: '24px 28px 20px',
+                  borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                }}
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
-              </button>
+                <div>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
+                    ArenaFlow · Demo Walkthrough
+                  </span>
+                  <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 800, fontSize: '20px', letterSpacing: '-0.025em', color: '#F0F0EE', marginTop: '6px', lineHeight: 1.1 }}>
+                    Watch Demo Flow
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.30)', padding: '4px', borderRadius: '6px', transition: 'color 150ms' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color = '#F0F0EE'}
+                  onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.30)'}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>close</span>
+                </button>
+              </div>
 
-              {/* Title & Metadata */}
-              <div className="border-b border-outline/10 pb-4">
-                <span className="font-label-caps text-[9px] text-slate-400 uppercase tracking-widest font-mono">
-                  ArenaFlow Presentation Walkthrough
-                </span>
-                <h3 className="text-xl font-bold text-slate-900 mt-1">
-                  Watch Demo Flow
-                </h3>
+              {/* Step indicators */}
+              <div style={{ padding: '20px 28px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {walkthroughSteps.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveStep(idx)}
+                    style={{
+                      width: idx === activeStep ? '24px' : '20px',
+                      height: idx === activeStep ? '24px' : '20px',
+                      borderRadius: '50%',
+                      background: idx === activeStep ? '#00D46A' : idx < activeStep ? 'rgba(0,212,106,0.20)' : 'rgba(255,255,255,0.08)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: '9px',
+                      fontWeight: 700,
+                      color: idx === activeStep ? '#080C0A' : idx < activeStep ? '#00D46A' : 'rgba(255,255,255,0.30)',
+                      transition: 'all 200ms',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {idx < activeStep ? (
+                      <span className="material-symbols-outlined" style={{ fontSize: '11px', fontVariationSettings: "'FILL' 1" }}>check</span>
+                    ) : idx + 1}
+                  </button>
+                ))}
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
               </div>
 
               {/* Step content */}
-              <div className="min-h-[160px] flex flex-col justify-between">
+              <div style={{ padding: '20px 28px', minHeight: '180px' }}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeStep}
-                    initial={{ opacity: 0, x: 15 }}
+                    initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -15 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-4"
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.18, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${walkthroughSteps[activeStep].accent}`}>
-                        <span className="material-symbols-outlined text-2xl">{walkthroughSteps[activeStep].icon}</span>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', marginBottom: '16px' }}>
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '12px',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '22px', color: walkthroughSteps[activeStep].badgeColor, fontVariationSettings: "'FILL' 1" }}>
+                          {walkthroughSteps[activeStep].icon}
+                        </span>
                       </div>
                       <div>
-                        <span className="block text-[8px] font-bold font-mono tracking-widest text-slate-400 uppercase">
-                          STEP {activeStep + 1} OF 5
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '4px' }}>
+                          Step {activeStep + 1} of {walkthroughSteps.length}
                         </span>
-                        <h4 className="text-sm font-bold text-slate-900 leading-tight">
+                        <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '-0.01em', color: '#F0F0EE', lineHeight: 1.2 }}>
                           {walkthroughSteps[activeStep].title}
                         </h4>
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-outline/10">
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', lineHeight: 1.7, color: 'rgba(240,240,238,0.55)', marginBottom: '14px' }}>
                       {walkthroughSteps[activeStep].description}
                     </p>
 
-                    <div className="flex">
-                      <span className={`px-2.5 py-1 text-[8px] font-bold font-mono uppercase tracking-wider rounded-lg border bg-white ${walkthroughSteps[activeStep].stepColor}`}>
-                        {walkthroughSteps[activeStep].badge}
-                      </span>
-                    </div>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '3px 10px',
+                      borderRadius: '9999px',
+                      background: `${walkthroughSteps[activeStep].badgeColor}15`,
+                      border: `1px solid ${walkthroughSteps[activeStep].badgeColor}30`,
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: '9px',
+                      fontWeight: 700,
+                      letterSpacing: '0.10em',
+                      textTransform: 'uppercase' as const,
+                      color: walkthroughSteps[activeStep].badgeColor,
+                    }}>
+                      {walkthroughSteps[activeStep].badge}
+                    </span>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              {/* Navigation Indicators */}
-              <div className="flex justify-between items-center mt-4 pt-4 border-t border-outline/10">
-                {/* Dots */}
-                <div className="flex gap-2">
-                  {walkthroughSteps.map((s, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveStep(idx)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        idx === activeStep ? 'w-6 bg-primary' : 'w-2 bg-slate-200 hover:bg-slate-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                {/* Next / Back Actions */}
-                <div className="flex gap-2">
-                  {activeStep > 0 && (
-                    <button
-                      onClick={() => setActiveStep(prev => prev - 1)}
-                      className="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:text-primary bg-slate-50 hover:bg-slate-100 rounded-full border border-outline/10 transition-colors"
-                    >
-                      Back
-                    </button>
-                  )}
-                  {activeStep < 4 ? (
-                    <button
-                      onClick={() => setActiveStep(prev => prev + 1)}
-                      className="px-5 py-2 text-xs font-bold text-white bg-primary hover:bg-primary-container rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all"
-                    >
-                      Next
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        setModalOpen(false);
-                        navigate('/dashboard');
-                      }}
-                      className="px-6 py-2.5 text-xs font-bold text-white bg-primary hover:bg-primary-container rounded-full shadow-md shadow-primary/20 hover:scale-105 active:scale-95 transition-all uppercase tracking-wider"
-                    >
-                      Launch Live Dashboard
-                    </button>
-                  )}
-                </div>
+              {/* Modal footer */}
+              <div
+                style={{
+                  padding: '16px 28px 24px',
+                  borderTop: '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: '10px',
+                }}
+              >
+                {activeStep > 0 && (
+                  <button
+                    onClick={() => setActiveStep(p => p - 1)}
+                    style={{
+                      padding: '9px 18px',
+                      background: 'transparent',
+                      border: '1px solid rgba(255,255,255,0.10)',
+                      borderRadius: '8px',
+                      color: 'rgba(255,255,255,0.45)',
+                      cursor: 'pointer',
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      transition: 'all 150ms',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.20)'; (e.currentTarget as HTMLButtonElement).style.color = '#F0F0EE'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.10)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.45)'; }}
+                  >
+                    Back
+                  </button>
+                )}
+                {activeStep < walkthroughSteps.length - 1 ? (
+                  <button
+                    onClick={() => setActiveStep(p => p + 1)}
+                    style={{
+                      padding: '9px 20px',
+                      background: '#00D46A',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#080C0A',
+                      cursor: 'pointer',
+                      fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      letterSpacing: '-0.01em',
+                      transition: 'all 150ms',
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#1AE078'}
+                    onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = '#00D46A'}
+                  >
+                    Next →
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setModalOpen(false); navigate('/dashboard'); }}
+                    style={{
+                      padding: '9px 20px',
+                      background: '#00D46A',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#080C0A',
+                      cursor: 'pointer',
+                      fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    Launch Dashboard →
+                  </button>
+                )}
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-
-const walkthroughSteps = [
-  {
-    step: 1,
-    title: 'Normal Stadium Operations',
-    description: 'The stadium is running normally. Crowd flows are optimal across all concourses, and the overall Safety Score is at 98%.',
-    accent: 'bg-primary/10 text-primary',
-    stepColor: 'text-primary border-primary/20',
-    icon: 'stadium',
-    badge: '🏟 SAFETY SCORE: 98%'
-  },
-  {
-    step: 2,
-    title: 'Unexpected Incident',
-    description: 'An unexpected Metro Delay occurs, causing rail transport capacity to drop. Fans begin aggregating and congestion builds rapidly at outer transit platforms.',
-    accent: 'bg-warning-amber/10 text-secondary',
-    stepColor: 'text-secondary border-warning-amber/20',
-    icon: 'train',
-    badge: '🚇 TRANSIT TERMINAL SURGE'
-  },
-  {
-    step: 3,
-    title: 'AI Prediction Anomaly',
-    description: 'ArenaFlow ingestion layers process real-time sensors. Gemini AI predicts crowd choke risks near Gate C, 4 minutes before a delay threshold is breached.',
-    accent: 'bg-primary/10 text-primary',
-    stepColor: 'text-primary border-primary/20',
-    icon: 'smart_toy',
-    badge: '🤖 94% CONFIDENCE INDEX'
-  },
-  {
-    step: 4,
-    title: 'Digital Twin Response',
-    description: 'The Digital Twin map highlights affected sectors in real time. Safety Score indicators decline, and the AI Copilot compiles recommended mitigation steps.',
-    accent: 'bg-critical-red/10 text-critical-red',
-    stepColor: 'text-critical-red border-critical-red/20',
-    icon: 'language',
-    badge: '📍 SAFETY WARNING ACTIVE'
-  },
-  {
-    step: 5,
-    title: 'AI Playbook Execution',
-    description: 'The operator deploys the AI playbook. Transit gates are adjusted, shuttle buses are rerouted, and crowd flow is balanced. The incident is resolved, and safety score recovers.',
-    accent: 'bg-primary/10 text-primary',
-    stepColor: 'text-primary border-primary/20',
-    icon: 'check_circle',
-    badge: '✅ RESOLUTION NOMINAL'
-  }
-];
