@@ -38,8 +38,8 @@ const zoneLayouts: ZonePosition[] = [
   { id: 'parking-lot', name: 'Parking Lot East', type: 'transit', x: 690, y: 480, w: 90, h: 80, shape: 'rect' },
 ];
 
-// ─── Dark editorial status color resolver ────────────────────────────────────
-function getDarkStatusColors(zone: {
+// ─── Editorial status color resolver ─────────────────────────────────────────
+function getStatusColors(zone: {
   status: string;
   waitTime: number;
   crowd: number;
@@ -47,33 +47,33 @@ function getDarkStatusColors(zone: {
 }, heatmapActive: boolean, telemetryMode: 'crowd' | 'wait') {
   if (!heatmapActive) {
     return {
-      fill: 'rgba(255,255,255,0.02)',
-      stroke: 'rgba(255,255,255,0.06)',
-      hoverFill: 'rgba(46,125,50,0.12)',
+      fill: 'rgba(0,0,0,0.02)',
+      stroke: 'rgba(0,0,0,0.06)',
+      hoverFill: 'rgba(46,125,50,0.08)',
       hoverStroke: '#2E7D32'
     };
   }
   if (telemetryMode === 'wait') {
     if (zone.waitTime > 25)
-      return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#FFFFFF' };
+      return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#1C1C1C' };
     if (zone.waitTime > 8)
-      return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#FFFFFF' };
-    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#FFFFFF' };
+      return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#1C1C1C' };
+    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#1C1C1C' };
   }
   
   if (zone.status === 'critical')
-    return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#FFFFFF' };
+    return { fill: '#C84A4A', stroke: '#C84A4A', hoverFill: '#C84A4A', hoverStroke: '#1C1C1C' };
   if (zone.status === 'warning')
-    return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#FFFFFF' };
+    return { fill: '#C48A00', stroke: '#C48A00', hoverFill: '#C48A00', hoverStroke: '#1C1C1C' };
   
   // Normal/Optimal -> depends on crowd load vs capacity
   const loadRatio = zone.crowd / zone.capacity;
   if (loadRatio > 0.8) {
-    return { fill: '#2E7D32', stroke: '#2E7D32', hoverFill: '#2E7D32', hoverStroke: '#FFFFFF' }; // High
+    return { fill: '#2E7D32', stroke: '#2E7D32', hoverFill: '#2E7D32', hoverStroke: '#1C1C1C' }; // High
   } else if (loadRatio > 0.4) {
-    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#FFFFFF' }; // Medium
+    return { fill: '#6BCB6E', stroke: '#6BCB6E', hoverFill: '#6BCB6E', hoverStroke: '#1C1C1C' }; // Medium
   } else {
-    return { fill: '#CDECCF', stroke: '#CDECCF', hoverFill: '#CDECCF', hoverStroke: '#FFFFFF' }; // Low
+    return { fill: '#CDECCF', stroke: '#CDECCF', hoverFill: '#CDECCF', hoverStroke: '#1C1C1C' }; // Low
   }
 }
 
@@ -202,7 +202,7 @@ export default function StadiumMap() {
   return (
     <div
       className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: '#101510', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', boxShadow: '0 8px 20px rgba(0,0,0,0.18)' }}
+      style={{ background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.04)' }}
     >
       {/* ── Tactical Grid ────────────────────────────────── */}
       <div
@@ -218,13 +218,13 @@ export default function StadiumMap() {
         }}
       />
 
-      {/* ── Ambient Pitch Glow (Replaced with soft vignette) ────────────── */}
+      {/* ── Ambient Glow ────────────── */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(circle, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 45%, transparent 80%)',
+          background: 'radial-gradient(circle, rgba(46,125,50,0.04) 0%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 1,
         }}
@@ -268,7 +268,7 @@ export default function StadiumMap() {
       >
         <defs>
           <radialGradient id="dtRadarGrad" cx="400" cy="300" r="350" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="rgba(46,125,50,0.05)" />
+            <stop offset="0%" stopColor="rgba(46,125,50,0.08)" />
             <stop offset="100%" stopColor="rgba(46,125,50,0)" />
           </radialGradient>
           <style>{`
@@ -394,9 +394,9 @@ export default function StadiumMap() {
         {/* Background */}
         <rect width="800" height="600" fill="url(#dtMapBg)" rx="20" />
 
-        {/* Stadium bowl outline geometry — lighter stands */}
-        <ellipse cx="400" cy="300" rx="340" ry="260" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-        <ellipse cx="400" cy="300" rx="290" ry="215" fill="rgba(255,255,255,0.01)" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" strokeDasharray="6 6" />
+        {/* Stadium bowl outline geometry */}
+        <ellipse cx="400" cy="300" rx="340" ry="260" fill="rgba(0,0,0,0.02)" stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+        <ellipse cx="400" cy="300" rx="290" ry="215" fill="rgba(0,0,0,0.01)" stroke="rgba(0,0,0,0.04)" strokeWidth="0.8" strokeDasharray="6 6" />
 
         {/* Vignette */}
         <rect width="800" height="600" fill="url(#dtVignette)" rx="20" />
@@ -462,7 +462,7 @@ export default function StadiumMap() {
           {zones.map((zone) => {
             const isSelected = selectedZoneId === zone.id;
             const isHovered = hoveredId === zone.id;
-            const c = getDarkStatusColors(zone, heatmapActive, telemetryMode);
+            const c = getStatusColors(zone, heatmapActive, telemetryMode);
 
             return (
               <g
@@ -520,7 +520,7 @@ export default function StadiumMap() {
                       x={zone.x + zone.w / 2}
                       y={zone.y + zone.h / 2 + 4}
                       textAnchor="middle"
-                      fill="#FFFFFF"
+                      fill="#1C1C1C"
                       style={{ ...LABEL_STYLE, opacity: heatmapActive ? 1.0 : 0.72 }}
                     >
                       {zone.name}
@@ -552,7 +552,7 @@ export default function StadiumMap() {
                     <text
                       x={zone.x} y={zone.y + 3}
                       textAnchor="middle"
-                      fill="#FFFFFF"
+                      fill="#1C1C1C"
                       style={{ ...LABEL_STYLE, fontSize: '8px', opacity: heatmapActive ? 1.0 : 0.72 }}
                     >
                       {zone.name.split(' ')[1]}
@@ -577,12 +577,12 @@ export default function StadiumMap() {
               left: tooltipPos.x,
               top: tooltipPos.y,
               transform: 'translate(-50%, -100%)',
-              background: 'rgba(13,20,16,0.96)',
-              border: '1px solid rgba(0,0,0,0.10)',
+              background: 'rgba(255,255,255,0.95)',
+              border: '1px solid rgba(0,0,0,0.08)',
               borderRadius: '12px',
               padding: '10px 14px',
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.60), inset 0 0 0 1px rgba(46,125,50,0.08)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
               zIndex: 30,
               pointerEvents: 'none',
               display: 'flex',
@@ -636,12 +636,12 @@ export default function StadiumMap() {
               bottom: '20px',
               left: '20px',
               width: '272px',
-              background: 'rgba(13,20,16,0.96)',
+              background: 'rgba(255,255,255,0.95)',
               border: '1px solid rgba(0,0,0,0.08)',
               borderRadius: '16px',
               padding: '16px',
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 16px 48px rgba(0,0,0,0.70), inset 0 0 0 1px rgba(46,125,50,0.06)',
+              boxShadow: '0 16px 48px rgba(0,0,0,0.12)',
               zIndex: 20,
               display: 'flex',
               flexDirection: 'column',

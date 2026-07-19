@@ -265,7 +265,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden" style={{ background: '#F7F6F1' }}>
+    <div className="relative min-h-screen w-full" style={{ background: '#F7F6F1' }}>
 
       {/* Splash Screen */}
       <AnimatePresence>
