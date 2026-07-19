@@ -111,7 +111,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#F9F9F7]/40 via-[#F9F9F7]/80 to-[#F9F9F7]" />
         </div>
 
-        <div className="relative z-20 flex flex-col items-center px-6 mt-16" style={{ maxWidth: '800px' }}>
+        <div className="relative z-20 flex flex-col items-center px-6" style={{ maxWidth: '800px' }}>
 
 
           {/* Eyebrow */}
