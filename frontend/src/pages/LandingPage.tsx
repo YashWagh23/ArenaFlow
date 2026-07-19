@@ -118,7 +118,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="w-24 h-24 mt-16 mb-4 flex items-center justify-center" 
+            className="w-24 h-24 mt-6 mb-6 relative top-8 flex items-center justify-center" 
           >
             <img src="/images/arenaflow-logo.png" alt="ArenaFlow Logo" className="w-full h-full object-contain" style={{ filter: 'drop-shadow(0 20px 40px rgba(46,125,50,0.15))' }} />
           </motion.div>
