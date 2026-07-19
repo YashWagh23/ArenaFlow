@@ -16,7 +16,7 @@ export default function NavigationSidebar() {
         background: 'rgba(8,12,10,0.60)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(255,255,204,0.05)',
+        borderRight: '1px solid rgba(255,255,255,0.05)',
       }}
     >
       {/* Nav rail */}
@@ -31,23 +31,23 @@ export default function NavigationSidebar() {
               width: '40px',
               height: '40px',
               borderRadius: '10px',
-              background: isActive ? 'rgba(255,255,204,0.08)' : 'transparent',
-              color: isActive ? '#FFFFCC' : 'rgba(255,255,204,0.30)',
+              background: isActive ? 'rgba(111,0,255,0.08)' : 'transparent',
+              color: isActive ? '#6F00FF' : 'rgba(255,255,255,0.30)',
               transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               textDecoration: 'none',
             })}
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLAnchorElement;
               if (!el.classList.contains('active')) {
-                el.style.color = 'rgba(255,255,204,0.70)';
-                el.style.background = 'rgba(255,255,204,0.05)';
+                el.style.color = 'rgba(255,255,255,0.70)';
+                el.style.background = 'rgba(255,255,255,0.05)';
               }
             }}
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLAnchorElement;
               // Reset only if not active — active state is controlled by NavLink
               if (!el.getAttribute('aria-current')) {
-                el.style.color = 'rgba(255,255,204,0.30)';
+                el.style.color = 'rgba(255,255,255,0.30)';
                 el.style.background = 'transparent';
               }
             }}
@@ -64,9 +64,9 @@ export default function NavigationSidebar() {
                       transform: 'translateY(-50%)',
                       width: '2px',
                       height: '18px',
-                      background: '#FFFFCC',
+                      background: '#6F00FF',
                       borderRadius: '0 2px 2px 0',
-                      boxShadow: '0 0 8px rgba(255,255,204,0.60)',
+                      boxShadow: '0 0 8px rgba(111,0,255,0.60)',
                     }}
                   />
                 )}
@@ -74,7 +74,7 @@ export default function NavigationSidebar() {
                   className="material-symbols-outlined"
                   style={{
                     fontSize: '18px',
-                    color: isActive ? '#FFFFCC' : undefined,
+                    color: isActive ? '#6F00FF' : undefined,
                     fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0",
                     transition: 'all 150ms',
                   }}
@@ -90,7 +90,7 @@ export default function NavigationSidebar() {
       {/* Bottom: Avatar */}
       <div
         className="flex items-center justify-center pb-4"
-        style={{ borderTop: '1px solid rgba(255,255,204,0.05)', paddingTop: '12px' }}
+        style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}
       >
         <div
           title="FIFA Admin · Command Lead"
@@ -98,7 +98,7 @@ export default function NavigationSidebar() {
             width: '28px',
             height: '28px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #E9F4A8 0%, #FFFFCC 100%)',
+            background: 'linear-gradient(135deg, #3B0270 0%, #6F00FF 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -110,7 +110,7 @@ export default function NavigationSidebar() {
               fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
               fontWeight: 800,
               fontSize: '9px',
-              color: '#1A1A00',
+              color: '#0F061A',
               letterSpacing: '0.02em',
             }}
           >

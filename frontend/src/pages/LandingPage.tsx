@@ -12,69 +12,69 @@ function StadiumAerial() {
       aria-hidden="true"
     >
       {/* Outer stadium bowl */}
-      <ellipse cx="450" cy="250" rx="440" ry="235" stroke="rgba(255,255,204,0.12)" strokeWidth="1"/>
-      <ellipse cx="450" cy="250" rx="400" ry="210" stroke="rgba(255,255,204,0.08)" strokeWidth="0.5"/>
-      <ellipse cx="450" cy="250" rx="360" ry="188" stroke="rgba(255,255,204,0.06)" strokeWidth="0.5"/>
+      <ellipse cx="450" cy="250" rx="440" ry="235" stroke="rgba(111,0,255,0.12)" strokeWidth="1"/>
+      <ellipse cx="450" cy="250" rx="400" ry="210" stroke="rgba(111,0,255,0.08)" strokeWidth="0.5"/>
+      <ellipse cx="450" cy="250" rx="360" ry="188" stroke="rgba(111,0,255,0.06)" strokeWidth="0.5"/>
 
       {/* Pitch rectangle */}
-      <rect x="100" y="90" width="700" height="320" rx="4" stroke="rgba(255,255,204,0.20)" strokeWidth="1"/>
+      <rect x="100" y="90" width="700" height="320" rx="4" stroke="rgba(111,0,255,0.20)" strokeWidth="1"/>
 
       {/* Midfield line */}
-      <line x1="450" y1="90" x2="450" y2="410" stroke="rgba(255,255,204,0.15)" strokeWidth="0.7"/>
+      <line x1="450" y1="90" x2="450" y2="410" stroke="rgba(111,0,255,0.15)" strokeWidth="0.7"/>
 
       {/* Center circle */}
-      <circle cx="450" cy="250" r="70" stroke="rgba(255,255,204,0.18)" strokeWidth="0.7"/>
+      <circle cx="450" cy="250" r="70" stroke="rgba(111,0,255,0.18)" strokeWidth="0.7"/>
 
       {/* Center spot */}
-      <circle cx="450" cy="250" r="4" fill="rgba(255,255,204,0.40)"/>
+      <circle cx="450" cy="250" r="4" fill="rgba(111,0,255,0.40)"/>
 
       {/* Left penalty area */}
-      <rect x="100" y="160" width="110" height="180" rx="2" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6"/>
+      <rect x="100" y="160" width="110" height="180" rx="2" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6"/>
       {/* Left goal area */}
-      <rect x="100" y="200" width="48" height="100" rx="1" stroke="rgba(255,255,204,0.10)" strokeWidth="0.5"/>
+      <rect x="100" y="200" width="48" height="100" rx="1" stroke="rgba(111,0,255,0.10)" strokeWidth="0.5"/>
       {/* Left penalty spot */}
-      <circle cx="210" cy="250" r="3" fill="rgba(255,255,204,0.30)"/>
+      <circle cx="210" cy="250" r="3" fill="rgba(111,0,255,0.30)"/>
       {/* Left arc */}
-      <path d="M 210 180 A 70 70 0 0 1 210 320" stroke="rgba(255,255,204,0.10)" strokeWidth="0.6" fill="none"/>
+      <path d="M 210 180 A 70 70 0 0 1 210 320" stroke="rgba(111,0,255,0.10)" strokeWidth="0.6" fill="none"/>
 
       {/* Right penalty area */}
-      <rect x="690" y="160" width="110" height="180" rx="2" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6"/>
+      <rect x="690" y="160" width="110" height="180" rx="2" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6"/>
       {/* Right goal area */}
-      <rect x="752" y="200" width="48" height="100" rx="1" stroke="rgba(255,255,204,0.10)" strokeWidth="0.5"/>
+      <rect x="752" y="200" width="48" height="100" rx="1" stroke="rgba(111,0,255,0.10)" strokeWidth="0.5"/>
       {/* Right penalty spot */}
-      <circle cx="690" cy="250" r="3" fill="rgba(255,255,204,0.30)"/>
+      <circle cx="690" cy="250" r="3" fill="rgba(111,0,255,0.30)"/>
       {/* Right arc */}
-      <path d="M 690 180 A 70 70 0 0 0 690 320" stroke="rgba(255,255,204,0.10)" strokeWidth="0.6" fill="none"/>
+      <path d="M 690 180 A 70 70 0 0 0 690 320" stroke="rgba(111,0,255,0.10)" strokeWidth="0.6" fill="none"/>
 
       {/* Corner arcs */}
-      <path d="M 100 100 A 12 12 0 0 1 112 90" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6" fill="none"/>
-      <path d="M 790 90 A 12 12 0 0 1 800 100" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6" fill="none"/>
-      <path d="M 800 400 A 12 12 0 0 1 790 410" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6" fill="none"/>
-      <path d="M 112 410 A 12 12 0 0 1 100 400" stroke="rgba(255,255,204,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 100 100 A 12 12 0 0 1 112 90" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 790 90 A 12 12 0 0 1 800 100" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 800 400 A 12 12 0 0 1 790 410" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6" fill="none"/>
+      <path d="M 112 410 A 12 12 0 0 1 100 400" stroke="rgba(111,0,255,0.14)" strokeWidth="0.6" fill="none"/>
 
       {/* Stadium seating rows (abstract) */}
       {[1,2,3,4,5].map(i => (
         <ellipse key={i} cx="450" cy="250"
           rx={355 + i*6} ry={183 + i*5}
-          stroke={`rgba(255,255,204,${0.025 - i*0.004})`} strokeWidth="0.4" fill="none"
+          stroke={`rgba(111,0,255,${0.025 - i*0.004})`} strokeWidth="0.4" fill="none"
         />
       ))}
 
       {/* Floodlight towers — 4 corners */}
       {[[95, 85], [805, 85], [95, 415], [805, 415]].map(([x, y], i) => (
         <g key={i}>
-          <circle cx={x} cy={y} r="6" fill="rgba(255,255,204,0.15)" stroke="rgba(255,255,204,0.30)" strokeWidth="0.8"/>
-          <circle cx={x} cy={y} r="3" fill="rgba(255,255,204,0.50)"/>
+          <circle cx={x} cy={y} r="6" fill="rgba(111,0,255,0.15)" stroke="rgba(111,0,255,0.30)" strokeWidth="0.8"/>
+          <circle cx={x} cy={y} r="3" fill="rgba(111,0,255,0.50)"/>
           {/* Glow */}
-          <circle cx={x} cy={y} r="14" fill="rgba(255,255,204,0.06)"/>
+          <circle cx={x} cy={y} r="14" fill="rgba(111,0,255,0.06)"/>
         </g>
       ))}
 
       {/* Crowd density heatmap — abstract colored zones */}
-      <ellipse cx="450" cy="95" rx="160" ry="20" fill="rgba(255,255,204,0.06)"/>
-      <ellipse cx="450" cy="405" rx="160" ry="20" fill="rgba(255,255,204,0.06)"/>
-      <ellipse cx="108" cy="250" rx="20" ry="90" fill="rgba(255,255,204,0.05)"/>
-      <ellipse cx="792" cy="250" rx="20" ry="90" fill="rgba(255,255,204,0.05)"/>
+      <ellipse cx="450" cy="95" rx="160" ry="20" fill="rgba(111,0,255,0.06)"/>
+      <ellipse cx="450" cy="405" rx="160" ry="20" fill="rgba(111,0,255,0.06)"/>
+      <ellipse cx="108" cy="250" rx="20" ry="90" fill="rgba(111,0,255,0.05)"/>
+      <ellipse cx="792" cy="250" rx="20" ry="90" fill="rgba(111,0,255,0.05)"/>
     </svg>
   );
 }
@@ -86,35 +86,35 @@ const walkthroughSteps = [
     description: 'The stadium is running normally. Crowd flows are optimal across all concourses, and the overall Safety Score is at 98%. ArenaFlow monitors every zone in real time.',
     icon: 'stadium',
     badge: 'SAFETY SCORE: 98%',
-    badgeColor: '#FFFFCC',
+    badgeColor: '#6F00FF',
   },
   {
     title: 'Unexpected Incident Detected',
     description: 'An unexpected Metro Delay occurs, causing rail transport capacity to drop. Fans begin aggregating and congestion builds rapidly at outer transit platforms.',
     icon: 'train',
     badge: 'TRANSIT TERMINAL SURGE',
-    badgeColor: '#F3C969',
+    badgeColor: '#FACC15',
   },
   {
     title: 'AI Prediction Anomaly',
     description: 'ArenaFlow processes real-time sensors. AI predicts crowd choke risks near Gate C, 4 minutes before a delay threshold is breached. Confidence: 94%.',
     icon: 'smart_toy',
     badge: '94% CONFIDENCE INDEX',
-    badgeColor: '#E9F4A8',
+    badgeColor: '#E9B3FB',
   },
   {
     title: 'Digital Twin Response',
     description: 'The Digital Twin map highlights affected sectors in real time. Safety Score indicators decline, and the AI Copilot compiles recommended mitigation steps.',
     icon: 'language',
     badge: 'SAFETY WARNING ACTIVE',
-    badgeColor: '#E86C5D',
+    badgeColor: '#F87171',
   },
   {
     title: 'AI Playbook Execution',
     description: 'The operator deploys the AI playbook. Transit gates are adjusted, shuttle buses rerouted, and crowd flow is balanced. The incident resolves — safety score recovers.',
     icon: 'check_circle',
     badge: 'RESOLUTION NOMINAL',
-    badgeColor: '#FFFFCC',
+    badgeColor: '#6F00FF',
   },
 ];
 
@@ -156,7 +156,7 @@ export default function LandingPage() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden select-none"
-      style={{ background: '#1A1A00' }}
+      style={{ background: '#0F061A' }}
     >
 
       {/* ── Floodlight Beams ── */}
@@ -164,9 +164,9 @@ export default function LandingPage() {
         className="absolute inset-0 pointer-events-none z-0"
         style={{
           background: `
-            radial-gradient(ellipse 1000px 700px at -5% -10%, rgba(255,255,204,0.10) 0%, transparent 60%),
-            radial-gradient(ellipse 700px 600px at 105% -8%, rgba(255,255,204,0.07) 0%, transparent 55%),
-            radial-gradient(ellipse 500px 800px at 50% 110%, rgba(255,255,204,0.04) 0%, transparent 60%)
+            radial-gradient(ellipse 1000px 700px at -5% -10%, rgba(111,0,255,0.10) 0%, transparent 60%),
+            radial-gradient(ellipse 700px 600px at 105% -8%, rgba(111,0,255,0.07) 0%, transparent 55%),
+            radial-gradient(ellipse 500px 800px at 50% 110%, rgba(111,0,255,0.04) 0%, transparent 60%)
           `,
         }}
       />
@@ -176,7 +176,7 @@ export default function LandingPage() {
         className="absolute inset-0 pointer-events-none z-0"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(255,255,204,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,204,0.035) 1px, transparent 1px)',
+            'linear-gradient(rgba(111,0,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(111,0,255,0.035) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
           opacity: 0.7,
         }}
@@ -200,14 +200,14 @@ export default function LandingPage() {
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to right, #1A1A00 0%, rgba(8,12,10,0.60) 25%, rgba(8,12,10,0) 60%)',
+            background: 'linear-gradient(to right, #0F061A 0%, rgba(8,12,10,0.60) 25%, rgba(8,12,10,0) 60%)',
           }}
         />
         {/* Fade gradient over SVG — bottom */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, #1A1A00 0%, rgba(8,12,10,0) 40%)',
+            background: 'linear-gradient(to top, #0F061A 0%, rgba(8,12,10,0) 40%)',
           }}
         />
       </div>
@@ -221,7 +221,7 @@ export default function LandingPage() {
           background: 'rgba(8,12,10,0.70)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,204,0.05)',
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
         }}
       >
         {/* Wordmark */}
@@ -230,20 +230,20 @@ export default function LandingPage() {
             style={{
               width: '20px', height: '20px',
               borderRadius: '5px',
-              background: 'linear-gradient(135deg, #E9F4A8, #FFFFCC)',
+              background: 'linear-gradient(135deg, #3B0270, #6F00FF)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '12px', color: '#1A1A00', fontVariationSettings: "'FILL' 1" }}>stadium</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '12px', color: '#0F061A', fontVariationSettings: "'FILL' 1" }}>stadium</span>
           </div>
-          <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '14px', letterSpacing: '-0.025em', color: '#FFFFCC' }}>ArenaFlow</span>
+          <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '14px', letterSpacing: '-0.025em', color: '#FFFFFF' }}>ArenaFlow</span>
         </div>
 
         {/* Right: clock + status */}
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#FFFFCC' }} />
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,204,0.35)', letterSpacing: '0.06em' }}>
+            <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#6F00FF' }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em' }}>
               {utcClock}
             </span>
           </div>
@@ -253,7 +253,7 @@ export default function LandingPage() {
               fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
               fontSize: '12px',
               fontWeight: 600,
-              color: 'rgba(255,255,204,0.50)',
+              color: 'rgba(255,255,255,0.50)',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
@@ -263,11 +263,11 @@ export default function LandingPage() {
               transition: 'color 150ms, background 150ms',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = '#FFFFCC';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,204,0.06)';
+              (e.currentTarget as HTMLButtonElement).style.color = '#FFFFFF';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,204,0.50)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.50)';
               (e.currentTarget as HTMLButtonElement).style.background = 'none';
             }}
           >
@@ -290,9 +290,9 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             style={{ marginBottom: '28px' }}
           >
-            <div className="inline-flex items-center gap-2" style={{ padding: '5px 12px', border: '1px solid rgba(255,255,204,0.20)', borderRadius: '9999px', background: 'rgba(255,255,204,0.06)' }}>
-              <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#FFFFCC' }} />
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', color: '#FFFFCC', textTransform: 'uppercase' }}>
+            <div className="inline-flex items-center gap-2" style={{ padding: '5px 12px', border: '1px solid rgba(111,0,255,0.20)', borderRadius: '9999px', background: 'rgba(111,0,255,0.06)' }}>
+              <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#6F00FF' }} />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', color: '#6F00FF', textTransform: 'uppercase' }}>
                 Live · FIFA 2026 · AI Stadium Operations
               </span>
             </div>
@@ -309,13 +309,13 @@ export default function LandingPage() {
               fontSize: 'clamp(52px, 6.5vw, 96px)',
               lineHeight: 0.96,
               letterSpacing: '-0.05em',
-              color: '#FFFFCC',
+              color: '#FFFFFF',
               marginBottom: '24px',
             }}
           >
             Stadium<br />
             Intelligence.<br />
-            <span style={{ color: '#FFFFCC' }}>At Scale.</span>
+            <span style={{ color: '#6F00FF' }}>At Scale.</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -328,7 +328,7 @@ export default function LandingPage() {
               fontWeight: 400,
               fontSize: '17px',
               lineHeight: 1.7,
-              color: 'rgba(255,255,204,0.50)',
+              color: 'rgba(255,255,255,0.50)',
               maxWidth: '440px',
               marginBottom: '40px',
             }}
@@ -352,8 +352,8 @@ export default function LandingPage() {
               className="group flex items-center gap-2.5"
               style={{
                 padding: '13px 24px',
-                background: '#FFFFCC',
-                color: '#1A1A00',
+                background: '#6F00FF',
+                color: '#0F061A',
                 border: 'none',
                 borderRadius: '10px',
                 cursor: 'pointer',
@@ -361,19 +361,19 @@ export default function LandingPage() {
                 fontWeight: 700,
                 fontSize: '14px',
                 letterSpacing: '-0.01em',
-                boxShadow: '0 0 0 1px rgba(255,255,204,0.50), 0 4px 20px rgba(255,255,204,0.25)',
+                boxShadow: '0 0 0 1px rgba(111,0,255,0.50), 0 4px 20px rgba(111,0,255,0.25)',
                 transition: 'all 200ms cubic-bezier(0.25,0.46,0.45,0.94)',
               }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLButtonElement;
                 el.style.background = '#1AE078';
-                el.style.boxShadow = '0 0 0 1px rgba(255,255,204,0.60), 0 8px 32px rgba(255,255,204,0.35)';
+                el.style.boxShadow = '0 0 0 1px rgba(111,0,255,0.60), 0 8px 32px rgba(111,0,255,0.35)';
                 el.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLButtonElement;
-                el.style.background = '#FFFFCC';
-                el.style.boxShadow = '0 0 0 1px rgba(255,255,204,0.50), 0 4px 20px rgba(255,255,204,0.25)';
+                el.style.background = '#6F00FF';
+                el.style.boxShadow = '0 0 0 1px rgba(111,0,255,0.50), 0 4px 20px rgba(111,0,255,0.25)';
                 el.style.transform = 'translateY(0)';
               }}
             >
@@ -387,8 +387,8 @@ export default function LandingPage() {
               style={{
                 padding: '12px 20px',
                 background: 'transparent',
-                color: 'rgba(255,255,204,0.55)',
-                border: '1px solid rgba(255,255,204,0.10)',
+                color: 'rgba(255,255,255,0.55)',
+                border: '1px solid rgba(255,255,255,0.10)',
                 borderRadius: '10px',
                 cursor: 'pointer',
                 fontFamily: "'Inter', sans-serif",
@@ -401,14 +401,14 @@ export default function LandingPage() {
               }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLButtonElement;
-                el.style.color = '#FFFFCC';
-                el.style.borderColor = 'rgba(255,255,204,0.20)';
-                el.style.background = 'rgba(255,255,204,0.04)';
+                el.style.color = '#FFFFFF';
+                el.style.borderColor = 'rgba(255,255,255,0.20)';
+                el.style.background = 'rgba(255,255,255,0.04)';
               }}
               onMouseLeave={e => {
                 const el = e.currentTarget as HTMLButtonElement;
-                el.style.color = 'rgba(255,255,204,0.55)';
-                el.style.borderColor = 'rgba(255,255,204,0.10)';
+                el.style.color = 'rgba(255,255,255,0.55)';
+                el.style.borderColor = 'rgba(255,255,255,0.10)';
                 el.style.background = 'transparent';
               }}
             >
@@ -433,8 +433,8 @@ export default function LandingPage() {
                 key={i}
                 style={{
                   padding: '14px 18px',
-                  background: 'rgba(255,255,204,0.04)',
-                  border: '1px solid rgba(255,255,204,0.07)',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.07)',
                   borderRadius: '12px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -442,15 +442,15 @@ export default function LandingPage() {
                   backdropFilter: 'blur(12px)',
                 }}
               >
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(255,255,204,0.25)' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
                   {stat.label}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  {stat.dot && <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#FFFFCC' }} />}
-                  <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontSize: '18px', fontWeight: 800, letterSpacing: '-0.025em', color: '#FFFFCC', lineHeight: 1 }}>
+                  {stat.dot && <span className="w-1.5 h-1.5 rounded-full pulse-live" style={{ background: '#6F00FF' }} />}
+                  <span style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontSize: '18px', fontWeight: 800, letterSpacing: '-0.025em', color: '#FFFFFF', lineHeight: 1 }}>
                     {stat.value}
                   </span>
-                  {stat.check && <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#FFFFCC', fontVariationSettings: "'FILL' 1" }}>check_circle</span>}
+                  {stat.check && <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#6F00FF', fontVariationSettings: "'FILL' 1" }}>check_circle</span>}
                 </div>
               </div>
             ))}
@@ -478,8 +478,8 @@ export default function LandingPage() {
               style={{
                 width: '100%',
                 maxWidth: '520px',
-                background: '#24240A',
-                border: '1px solid rgba(255,255,204,0.09)',
+                background: '#171025',
+                border: '1px solid rgba(255,255,255,0.09)',
                 borderRadius: '24px',
                 boxShadow: '0 40px 120px rgba(0,0,0,0.70)',
                 overflow: 'hidden',
@@ -489,25 +489,25 @@ export default function LandingPage() {
               <div
                 style={{
                   padding: '24px 28px 20px',
-                  borderBottom: '1px solid rgba(255,255,204,0.06)',
+                  borderBottom: '1px solid rgba(255,255,255,0.06)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'flex-start',
                 }}
               >
                 <div>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,204,0.25)' }}>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
                     ArenaFlow · Demo Walkthrough
                   </span>
-                  <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 800, fontSize: '20px', letterSpacing: '-0.025em', color: '#FFFFCC', marginTop: '6px', lineHeight: 1.1 }}>
+                  <h3 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 800, fontSize: '20px', letterSpacing: '-0.025em', color: '#FFFFFF', marginTop: '6px', lineHeight: 1.1 }}>
                     Watch Demo Flow
                   </h3>
                 </div>
                 <button
                   onClick={() => setModalOpen(false)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,204,0.30)', padding: '4px', borderRadius: '6px', transition: 'color 150ms' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color = '#FFFFCC'}
-                  onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,204,0.30)'}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.30)', padding: '4px', borderRadius: '6px', transition: 'color 150ms' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color = '#FFFFFF'}
+                  onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.30)'}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>close</span>
                 </button>
@@ -523,14 +523,14 @@ export default function LandingPage() {
                       width: idx === activeStep ? '24px' : '20px',
                       height: idx === activeStep ? '24px' : '20px',
                       borderRadius: '50%',
-                      background: idx === activeStep ? '#FFFFCC' : idx < activeStep ? 'rgba(255,255,204,0.20)' : 'rgba(255,255,204,0.08)',
+                      background: idx === activeStep ? '#6F00FF' : idx < activeStep ? 'rgba(111,0,255,0.20)' : 'rgba(255,255,255,0.08)',
                       border: 'none',
                       cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: '9px',
                       fontWeight: 700,
-                      color: idx === activeStep ? '#1A1A00' : idx < activeStep ? '#FFFFCC' : 'rgba(255,255,204,0.30)',
+                      color: idx === activeStep ? '#0F061A' : idx < activeStep ? '#6F00FF' : 'rgba(255,255,255,0.30)',
                       transition: 'all 200ms',
                       flexShrink: 0,
                     }}
@@ -540,7 +540,7 @@ export default function LandingPage() {
                     ) : idx + 1}
                   </button>
                 ))}
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,204,0.06)' }} />
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
               </div>
 
               {/* Step content */}
@@ -559,8 +559,8 @@ export default function LandingPage() {
                           width: '44px',
                           height: '44px',
                           borderRadius: '12px',
-                          background: 'rgba(255,255,204,0.05)',
-                          border: '1px solid rgba(255,255,204,0.08)',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.08)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -572,16 +572,16 @@ export default function LandingPage() {
                         </span>
                       </div>
                       <div>
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,204,0.25)', display: 'block', marginBottom: '4px' }}>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '8px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '4px' }}>
                           Step {activeStep + 1} of {walkthroughSteps.length}
                         </span>
-                        <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '-0.01em', color: '#FFFFCC', lineHeight: 1.2 }}>
+                        <h4 style={{ fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '-0.01em', color: '#FFFFFF', lineHeight: 1.2 }}>
                           {walkthroughSteps[activeStep].title}
                         </h4>
                       </div>
                     </div>
 
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', lineHeight: 1.7, color: 'rgba(255,255,204,0.55)', marginBottom: '14px' }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', lineHeight: 1.7, color: 'rgba(255,255,255,0.55)', marginBottom: '14px' }}>
                       {walkthroughSteps[activeStep].description}
                     </p>
 
@@ -610,7 +610,7 @@ export default function LandingPage() {
               <div
                 style={{
                   padding: '16px 28px 24px',
-                  borderTop: '1px solid rgba(255,255,204,0.06)',
+                  borderTop: '1px solid rgba(255,255,255,0.06)',
                   display: 'flex',
                   justifyContent: 'flex-end',
                   gap: '10px',
@@ -622,17 +622,17 @@ export default function LandingPage() {
                     style={{
                       padding: '9px 18px',
                       background: 'transparent',
-                      border: '1px solid rgba(255,255,204,0.10)',
+                      border: '1px solid rgba(255,255,255,0.10)',
                       borderRadius: '8px',
-                      color: 'rgba(255,255,204,0.45)',
+                      color: 'rgba(255,255,255,0.45)',
                       cursor: 'pointer',
                       fontFamily: "'Inter', sans-serif",
                       fontSize: '13px',
                       fontWeight: 500,
                       transition: 'all 150ms',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,204,0.20)'; (e.currentTarget as HTMLButtonElement).style.color = '#FFFFCC'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,204,0.10)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,204,0.45)'; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.20)'; (e.currentTarget as HTMLButtonElement).style.color = '#FFFFFF'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.10)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.45)'; }}
                   >
                     Back
                   </button>
@@ -642,10 +642,10 @@ export default function LandingPage() {
                     onClick={() => setActiveStep(p => p + 1)}
                     style={{
                       padding: '9px 20px',
-                      background: '#FFFFCC',
+                      background: '#6F00FF',
                       border: 'none',
                       borderRadius: '8px',
-                      color: '#1A1A00',
+                      color: '#0F061A',
                       cursor: 'pointer',
                       fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
                       fontSize: '13px',
@@ -654,7 +654,7 @@ export default function LandingPage() {
                       transition: 'all 150ms',
                     }}
                     onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#1AE078'}
-                    onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = '#FFFFCC'}
+                    onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = '#6F00FF'}
                   >
                     Next →
                   </button>
@@ -663,10 +663,10 @@ export default function LandingPage() {
                     onClick={() => { setModalOpen(false); navigate('/dashboard'); }}
                     style={{
                       padding: '9px 20px',
-                      background: '#FFFFCC',
+                      background: '#6F00FF',
                       border: 'none',
                       borderRadius: '8px',
-                      color: '#1A1A00',
+                      color: '#0F061A',
                       cursor: 'pointer',
                       fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
                       fontSize: '13px',
