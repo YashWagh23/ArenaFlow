@@ -22,39 +22,39 @@
    ============================================================ */
 :root {
   /* Backgrounds */
-  --bg:            #080C0A;
-  --surface:       #0D1410;
-  --surface-2:     #111916;
-  --surface-3:     #161E1A;
+  --bg:            #1A1A00;
+  --surface:       #24240A;
+  --surface-2:     #24240A;
+  --surface-3:     #2D2D12;
 
   /* Glass surfaces */
-  --glass:         rgba(255,255,255,0.04);
-  --glass-hover:   rgba(255,255,255,0.06);
-  --glass-active:  rgba(255,255,255,0.08);
+  --glass:         rgba(255,255,204,0.04);
+  --glass-hover:   rgba(255,255,204,0.06);
+  --glass-active:  rgba(255,255,204,0.08);
 
   /* Borders */
-  --border:        rgba(255,255,255,0.07);
-  --border-subtle: rgba(255,255,255,0.04);
-  --border-strong: rgba(255,255,255,0.12);
+  --border:        rgba(255,255,204,0.07);
+  --border-subtle: rgba(255,255,204,0.04);
+  --border-strong: rgba(255,255,204,0.12);
 
   /* Brand */
-  --green:         #00D46A;
-  --green-dim:     rgba(0,212,106,0.15);
-  --green-dark:    #006B3F;
-  --gold:          #F5C842;
-  --gold-dim:      rgba(245,200,66,0.15);
+  --green:         #FFFFCC;
+  --green-dim:     rgba(255,255,204,0.15);
+  --green-dark:    #E9F4A8;
+  --gold:          #E9F4A8;
+  --gold-dim:      rgba(233,244,168,0.15);
 
   /* Text */
-  --ink:           #F0F0EE;
-  --muted:         rgba(240,240,238,0.55);
-  --dim:           rgba(240,240,238,0.25);
+  --ink:           #FFFFCC;
+  --muted:         rgba(255,255,204,0.55);
+  --dim:           rgba(255,255,204,0.25);
 
   /* Status */
-  --danger:        #FF4444;
-  --danger-dim:    rgba(255,68,68,0.12);
-  --amber:         #FFB800;
-  --amber-dim:     rgba(255,184,0,0.12);
-  --emerald:       #10B981;
+  --danger:        #E86C5D;
+  --danger-dim:    rgba(232,108,93,0.12);
+  --amber:         #F3C969;
+  --amber-dim:     rgba(243,201,105,0.12);
+  --emerald:       #74D680;
 
   /* Typography display font */
   --font-display: 'Mona Sans', 'Hanken Grotesk', sans-serif;
@@ -102,7 +102,7 @@
 
   /* Selection color */
   ::selection {
-    background: rgba(0,212,106,0.20);
+    background: rgba(255,255,204,0.20);
     color: var(--ink);
   }
 }
@@ -119,22 +119,22 @@
     box-shadow:
       0 0 0 0 transparent,
       0 4px 24px rgba(0,0,0,0.40),
-      inset 0 1px 0 rgba(255,255,255,0.05);
+      inset 0 1px 0 rgba(255,255,204,0.05);
   }
 
   /* Heavier elevated surface */
   .glass-panel {
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,204,0.03);
     border: 1px solid var(--border-subtle);
     box-shadow: 0 8px 32px rgba(0,0,0,0.50);
   }
 
   /* AI Copilot / terminal dark surface */
   .glass-dark {
-    background: rgba(0,212,106,0.03);
-    border: 1px solid rgba(0,212,106,0.10);
+    background: rgba(255,255,204,0.03);
+    border: 1px solid rgba(255,255,204,0.10);
     box-shadow:
-      0 0 0 1px rgba(0,212,106,0.06) inset,
+      0 0 0 1px rgba(255,255,204,0.06) inset,
       0 20px 60px rgba(0,0,0,0.60);
   }
 
@@ -150,7 +150,7 @@
     border-color: var(--border-strong);
     box-shadow:
       0 12px 40px rgba(0,0,0,0.60),
-      0 0 0 1px rgba(255,255,255,0.10) inset;
+      0 0 0 1px rgba(255,255,204,0.10) inset;
   }
 
   /* ── Status Pills ─────────────────────────────────── */
@@ -168,27 +168,27 @@
   }
 
   .pill-badge-green {
-    background: rgba(0,212,106,0.10);
-    color: #00D46A;
-    border: 1px solid rgba(0,212,106,0.20);
+    background: rgba(255,255,204,0.10);
+    color: #FFFFCC;
+    border: 1px solid rgba(255,255,204,0.20);
   }
 
   .pill-badge-red {
     background: var(--danger-dim);
     color: var(--danger);
-    border: 1px solid rgba(255,68,68,0.20);
+    border: 1px solid rgba(232,108,93,0.20);
   }
 
   .pill-badge-amber {
     background: var(--amber-dim);
     color: var(--amber);
-    border: 1px solid rgba(255,184,0,0.20);
+    border: 1px solid rgba(243,201,105,0.20);
   }
 
   .pill-badge-gold {
     background: var(--gold-dim);
     color: var(--gold);
-    border: 1px solid rgba(245,200,66,0.20);
+    border: 1px solid rgba(233,244,168,0.20);
   }
 
   /* ── Hairline divider ─────────────────────────────── */
@@ -200,15 +200,15 @@
   /* ── Stadium pitch geometry ─────────────────────── */
   .pitch-pattern {
     background-image:
-      linear-gradient(rgba(0,212,106,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,106,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,204,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,204,0.04) 1px, transparent 1px);
     background-size: 80px 80px;
   }
 
   .pitch-grid {
     background-image:
-      linear-gradient(rgba(0,212,106,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,106,0.05) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,204,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,204,0.05) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 
@@ -223,8 +223,8 @@
     background: linear-gradient(
       to bottom,
       transparent,
-      rgba(0,212,106,0.15) 15%,
-      rgba(0,212,106,0.15) 85%,
+      rgba(255,255,204,0.15) 15%,
+      rgba(255,255,204,0.15) 85%,
       transparent
     );
   }
@@ -237,9 +237,9 @@
   /* ── Floodlight glow background ──────────────────── */
   .floodlight-bg {
     background:
-      radial-gradient(ellipse 900px 700px at -10% -15%, rgba(0,212,106,0.09) 0%, transparent 65%),
-      radial-gradient(ellipse 700px 500px at 110% -10%, rgba(0,212,106,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 600px 400px at 50% -5%, rgba(0,212,106,0.04) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 700px at -10% -15%, rgba(255,255,204,0.09) 0%, transparent 65%),
+      radial-gradient(ellipse 700px 500px at 110% -10%, rgba(255,255,204,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 50% -5%, rgba(255,255,204,0.04) 0%, transparent 55%),
       var(--bg);
   }
 
@@ -342,9 +342,9 @@
 
   /* Critical red ring */
   @keyframes pulse-red-ring {
-    0%   { box-shadow: 0 0 0 0   rgba(255,68,68,0.4); }
-    70%  { box-shadow: 0 0 0 8px rgba(255,68,68,0);   }
-    100% { box-shadow: 0 0 0 0   rgba(255,68,68,0);   }
+    0%   { box-shadow: 0 0 0 0   rgba(232,108,93,0.4); }
+    70%  { box-shadow: 0 0 0 8px rgba(232,108,93,0);   }
+    100% { box-shadow: 0 0 0 0   rgba(232,108,93,0);   }
   }
   .pulse-red {
     animation: pulse-red-ring 2s var(--ease-apple) infinite;
@@ -352,8 +352,8 @@
 
   /* Green success ring */
   @keyframes pulse-emerald {
-    0%, 100% { box-shadow: 0 0 0 0   rgba(0,212,106,0.3); }
-    50%       { box-shadow: 0 0 0 6px rgba(0,212,106,0);   }
+    0%, 100% { box-shadow: 0 0 0 0   rgba(255,255,204,0.3); }
+    50%       { box-shadow: 0 0 0 6px rgba(255,255,204,0);   }
   }
   .pulse-emerald {
     animation: pulse-emerald 3s var(--ease-apple) infinite;
@@ -361,8 +361,8 @@
 
   /* Slow ambient glow for brand elements */
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(0,212,106,0.20), 0 4px 16px rgba(0,212,106,0.10); }
-    50%       { box-shadow: 0 0 40px rgba(0,212,106,0.35), 0 8px 32px rgba(0,212,106,0.20); }
+    0%, 100% { box-shadow: 0 0 20px rgba(255,255,204,0.20), 0 4px 16px rgba(255,255,204,0.10); }
+    50%       { box-shadow: 0 0 40px rgba(255,255,204,0.35), 0 8px 32px rgba(255,255,204,0.20); }
   }
   .glow-pulse {
     animation: glow-pulse 3s var(--ease-apple) infinite;
@@ -423,11 +423,11 @@
 .scrollbar-thin::-webkit-scrollbar { width: 2px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,204,0.08);
   border-radius: 9999px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.14);
+  background: rgba(255,255,204,0.14);
 }
 
 /* ============================================================
@@ -446,12 +446,12 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--green);
   cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(0,212,106,0.20);
+  box-shadow: 0 0 0 3px rgba(255,255,204,0.20);
   transition: transform 150ms, box-shadow 150ms;
 }
 input[type='range']::-webkit-slider-thumb:hover {
   transform: scale(1.25);
-  box-shadow: 0 0 0 5px rgba(0,212,106,0.25);
+  box-shadow: 0 0 0 5px rgba(255,255,204,0.25);
 }
 
 /* ============================================================
@@ -460,6 +460,6 @@ input[type='range']::-webkit-slider-thumb:hover {
 .stadium-arc {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(0,212,106,0.06);
+  border: 1px solid rgba(255,255,204,0.06);
   pointer-events: none;
 }

@@ -1,18 +1,18 @@
 /** Brand green — primary accent */
-export const COLOR_GREEN = '#00D46A';
+export const COLOR_GREEN = '#FFFFCC';
 /** Brand green — dark variant for gradients */
-export const COLOR_GREEN_DARK = '#006B3F';
+export const COLOR_GREEN_DARK = '#E9F4A8';
 /** Alert red — critical incidents */
-export const COLOR_RED = '#FF4444';
+export const COLOR_RED = '#E86C5D';
 /** Alert amber — warnings */
-export const COLOR_AMBER = '#FFB800';
+export const COLOR_AMBER = '#F3C969';
 /** AI gold — confidence / AI panels */
-export const COLOR_GOLD = '#F5C842';
+export const COLOR_GOLD = '#E9F4A8';
 /** Primary background */
-export const COLOR_BG = '#080C0A';
+export const COLOR_BG = '#1A1A00';
 /** Primary text */
-export const COLOR_TEXT = '#F0F0EE';
+export const COLOR_TEXT = '#FFFFCC';
 /** Muted text */
-export const COLOR_TEXT_MUTED = 'rgba(255,255,255,0.45)';
+export const COLOR_TEXT_MUTED = 'rgba(255,255,204,0.45)';
 /** Subtle border */
-export const COLOR_BORDER = 'rgba(255,255,255,0.07)';
+export const COLOR_BORDER = 'rgba(255,255,204,0.07)';

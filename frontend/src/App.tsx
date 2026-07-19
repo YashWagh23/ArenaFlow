@@ -40,14 +40,14 @@ function DashboardLayout() {
   return (
     <div
       className="h-screen w-screen overflow-hidden relative"
-      style={{ background: '#080C0A' }}
+      style={{ background: '#1A1A00' }}
     >
       {/* Ambient pitch grid — very subtle */}
       <div
         className="absolute inset-0 pointer-events-none z-0"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(0,212,106,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,106,0.025) 1px, transparent 1px)',
+            'linear-gradient(rgba(255,255,204,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,204,0.025) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
           opacity: 0.6,
         }}
@@ -100,16 +100,16 @@ function SplashScreen() {
   return (
     <div
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-      style={{ background: '#080C0A' }}
+      style={{ background: '#1A1A00' }}
     >
       {/* Floodlight beams */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 800px 600px at 0% 0%, rgba(0,212,106,0.06) 0%, transparent 65%),
-            radial-gradient(ellipse 600px 500px at 100% 0%, rgba(0,212,106,0.04) 0%, transparent 60%),
-            radial-gradient(ellipse 400px 600px at 50% 100%, rgba(0,212,106,0.03) 0%, transparent 70%)
+            radial-gradient(ellipse 800px 600px at 0% 0%, rgba(255,255,204,0.06) 0%, transparent 65%),
+            radial-gradient(ellipse 600px 500px at 100% 0%, rgba(255,255,204,0.04) 0%, transparent 60%),
+            radial-gradient(ellipse 400px 600px at 50% 100%, rgba(255,255,204,0.03) 0%, transparent 70%)
           `,
         }}
       />
@@ -119,14 +119,14 @@ function SplashScreen() {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(0,212,106,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,106,0.04) 1px, transparent 1px)',
+            'linear-gradient(rgba(255,255,204,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,204,0.04) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
         }}
       />
 
       {/* Stadium oval rings */}
-      <div className="absolute" style={{ width: '700px', height: '700px', border: '1px solid rgba(0,212,106,0.05)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
-      <div className="absolute" style={{ width: '1100px', height: '1100px', border: '1px solid rgba(0,212,106,0.03)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
+      <div className="absolute" style={{ width: '700px', height: '700px', border: '1px solid rgba(255,255,204,0.05)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
+      <div className="absolute" style={{ width: '1100px', height: '1100px', border: '1px solid rgba(255,255,204,0.03)', borderRadius: '50%', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center" style={{ gap: '32px' }}>
@@ -143,14 +143,14 @@ function SplashScreen() {
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              background: 'linear-gradient(135deg, #006B3F 0%, #00D46A 100%)',
+              background: 'linear-gradient(135deg, #E9F4A8 0%, #FFFFCC 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 40px rgba(0,212,106,0.20), 0 8px 32px rgba(0,0,0,0.40)',
+              boxShadow: '0 0 40px rgba(255,255,204,0.20), 0 8px 32px rgba(0,0,0,0.40)',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#080C0A', fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#1A1A00', fontVariationSettings: "'FILL' 1" }}>
               stadium
             </span>
           </div>
@@ -162,7 +162,7 @@ function SplashScreen() {
                 fontWeight: 900,
                 fontSize: '32px',
                 letterSpacing: '-0.04em',
-                color: '#F0F0EE',
+                color: '#FFFFCC',
                 lineHeight: 1.0,
               }}
             >
@@ -174,7 +174,7 @@ function SplashScreen() {
                 fontSize: '9px',
                 fontWeight: 600,
                 letterSpacing: '0.14em',
-                color: 'rgba(255,255,255,0.25)',
+                color: 'rgba(255,255,204,0.25)',
                 textTransform: 'uppercase',
                 marginTop: '6px',
               }}
@@ -197,7 +197,7 @@ function SplashScreen() {
               style={{
                 width: '14px',
                 height: '14px',
-                border: '2px solid #00D46A',
+                border: '2px solid #FFFFCC',
                 borderTopColor: 'transparent',
                 borderRadius: '50%',
                 flexShrink: 0,
@@ -209,7 +209,7 @@ function SplashScreen() {
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '10px',
                 fontWeight: 600,
-                color: 'rgba(255,255,255,0.45)',
+                color: 'rgba(255,255,204,0.45)',
                 letterSpacing: '0.04em',
               }}
             >
@@ -222,13 +222,13 @@ function SplashScreen() {
             style={{
               width: '100%',
               height: '1px',
-              background: 'rgba(255,255,255,0.06)',
+              background: 'rgba(255,255,204,0.06)',
               borderRadius: '9999px',
               overflow: 'hidden',
             }}
           >
             <motion.div
-              style={{ height: '100%', background: '#00D46A', borderRadius: '9999px' }}
+              style={{ height: '100%', background: '#FFFFCC', borderRadius: '9999px' }}
               initial={{ width: '0%' }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -244,7 +244,7 @@ function SplashScreen() {
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: '9px',
           fontWeight: 500,
-          color: 'rgba(255,255,255,0.15)',
+          color: 'rgba(255,255,204,0.15)',
           letterSpacing: '0.10em',
           textTransform: 'uppercase',
         }}
@@ -265,7 +265,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden" style={{ background: '#080C0A' }}>
+    <div className="relative h-screen w-screen overflow-hidden" style={{ background: '#1A1A00' }}>
 
       {/* Splash Screen */}
       <AnimatePresence>

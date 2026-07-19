@@ -49,7 +49,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
         aria-live="assertive"
         style={{
           minHeight: '100vh',
-          background: '#080C0A',
+          background: '#1A1A00',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -60,8 +60,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
           style={{
             maxWidth: '480px',
             width: '100%',
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,68,68,0.20)',
+            background: 'rgba(255,255,204,0.03)',
+            border: '1px solid rgba(232,108,93,0.20)',
             borderRadius: '20px',
             padding: '40px 36px',
             textAlign: 'center',
@@ -70,7 +70,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <span
             className="material-symbols-outlined"
             aria-hidden="true"
-            style={{ fontSize: '36px', color: '#FF4444', display: 'block', marginBottom: '16px' }}
+            style={{ fontSize: '36px', color: '#E86C5D', display: 'block', marginBottom: '16px' }}
           >
             warning
           </span>
@@ -80,7 +80,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
               fontFamily: "'Mona Sans', 'Hanken Grotesk', sans-serif",
               fontWeight: 800,
               fontSize: '20px',
-              color: '#F0F0EE',
+              color: '#FFFFCC',
               marginBottom: '8px',
               letterSpacing: '-0.025em',
             }}
@@ -92,7 +92,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: '14px',
-              color: 'rgba(255,255,255,0.45)',
+              color: 'rgba(255,255,204,0.45)',
               lineHeight: 1.65,
               marginBottom: '24px',
             }}
@@ -106,9 +106,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '10px',
-                color: 'rgba(255,255,255,0.25)',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                color: 'rgba(255,255,204,0.25)',
+                background: 'rgba(255,255,204,0.03)',
+                border: '1px solid rgba(255,255,204,0.07)',
                 borderRadius: '8px',
                 padding: '10px 14px',
                 textAlign: 'left',
@@ -127,9 +127,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
               style={{
                 padding: '10px 20px',
                 background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,204,0.12)',
                 borderRadius: '10px',
-                color: 'rgba(255,255,255,0.50)',
+                color: 'rgba(255,255,204,0.50)',
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '10px',
                 fontWeight: 700,
@@ -145,10 +145,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
               onClick={this.handleReload}
               style={{
                 padding: '10px 20px',
-                background: 'rgba(0,212,106,0.10)',
-                border: '1px solid rgba(0,212,106,0.25)',
+                background: 'rgba(255,255,204,0.10)',
+                border: '1px solid rgba(255,255,204,0.25)',
                 borderRadius: '10px',
-                color: '#00D46A',
+                color: '#FFFFCC',
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '10px',
                 fontWeight: 700,

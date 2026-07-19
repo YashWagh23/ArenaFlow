@@ -12,7 +12,7 @@ function Shimmer({ width = '100%', height = 24, radius = 8 }: {
         width,
         height,
         borderRadius: radius,
-        background: 'rgba(255,255,255,0.05)',
+        background: 'rgba(255,255,204,0.05)',
         animation: 'shimmer 1.5s ease-in-out infinite',
       }}
     />
@@ -27,7 +27,7 @@ export function PageSkeleton() {
       aria-busy="true"
       style={{
         minHeight: 'calc(100vh - 48px)',
-        background: '#080C0A',
+        background: '#1A1A00',
         padding: '32px',
         display: 'flex',
         flexDirection: 'column',
@@ -49,8 +49,8 @@ export function PageSkeleton() {
           <div
             key={i}
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.07)',
+              background: 'rgba(255,255,204,0.03)',
+              border: '1px solid rgba(255,255,204,0.07)',
               borderRadius: '16px',
               padding: '20px',
               display: 'flex',
@@ -70,8 +70,8 @@ export function PageSkeleton() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: '20px', flex: 1 }}>
         <div
           style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.07)',
+            background: 'rgba(255,255,204,0.03)',
+            border: '1px solid rgba(255,255,204,0.07)',
             borderRadius: '20px',
             minHeight: '400px',
           }}
@@ -82,8 +82,8 @@ export function PageSkeleton() {
             <div
               key={i}
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
+                background: 'rgba(255,255,204,0.03)',
+                border: '1px solid rgba(255,255,204,0.07)',
                 borderRadius: '16px',
                 padding: '20px',
                 display: 'flex',

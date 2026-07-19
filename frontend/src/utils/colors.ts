@@ -21,9 +21,9 @@ export function getSeverityColor(severity: 'info' | 'warning' | 'critical'): str
 /** Returns a CSS rgba background string for a zone status. */
 export function getZoneStatusBg(status: MetricZone['status']): string {
   switch (status) {
-    case 'critical': return 'rgba(255,68,68,0.10)';
-    case 'warning':  return 'rgba(255,184,0,0.10)';
-    case 'optimal':  return 'rgba(0,212,106,0.08)';
-    case 'inactive': return 'rgba(255,255,255,0.04)';
+    case 'critical': return 'rgba(232,108,93,0.10)';
+    case 'warning':  return 'rgba(243,201,105,0.10)';
+    case 'optimal':  return 'rgba(255,255,204,0.08)';
+    case 'inactive': return 'rgba(255,255,204,0.04)';
   }
 }
