@@ -106,7 +106,7 @@ export default function ExecutiveAnalytics() {
   const capacityPct = Math.round((totalAttendance / capacity) * 100);
   const safetyScore = state.globalSafetyScore;
   const safetyColor = safetyScore > 85 ? '#2E7D32' : safetyScore > 60 ? '#C48A00' : '#C84A4A';
-  const predAccuracy = Math.round(analytics.aiConfidence.successRate * 100);
+  const predAccuracy = Math.round(analytics.aiConfidence.successRate);
 
   const stands = [
     { label: 'North Stand', val: northGate, cap: 18000 },
@@ -182,8 +182,8 @@ export default function ExecutiveAnalytics() {
           ].map((m, i) => (
             <motion.div
               key={m.label}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.35, delay: i * 0.07 }}
               style={{
                 padding: '28px 28px',
