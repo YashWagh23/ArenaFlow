@@ -4,10 +4,12 @@
   "private": true,
   "main": "src/server.ts",
   "scripts": {
+    "predev": "cd ../shared && npm run build",
     "dev": "tsx watch src/server.ts",
+    "prebuild": "cd ../shared && npm run build",
     "build": "tsc",
     "test": "tsx tests/sim.test.ts",
-    "start": "tsx src/server.ts"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@fastify/compress": "^9.1.0",

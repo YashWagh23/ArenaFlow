@@ -1,0 +1,6 @@
+fix: resolve Vercel deployment crash by compiling shared workspace
+
+- Add `tsconfig.json` to `shared` and update `package.json` to compile to `dist/index.js`
+- Update `backend/package.json` with a `prebuild` step to compile `shared` before backend compilation
+- Add Vite alias in `frontend/vite.config.ts` to seamlessly map `shared` to `src/index.ts` for local hot-reloading
+- Add `predev` script to `backend/package.json` to ensure `shared` exists before `tsx` resolves it
