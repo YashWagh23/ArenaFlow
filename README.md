@@ -1,16 +1,32 @@
-# ArenaFlow
+<div align="center">
+  <img src="frontend/public/images/arenaflow-logo.png" alt="ArenaFlow Logo" width="200"/>
+  <h1>ArenaFlow</h1>
+  <p><strong>Real-time AI-Powered Stadium Operations & Incident Command Center</strong></p>
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+  [![Fastify](https://img.shields.io/badge/Fastify-000000?style=flat&logo=fastify&logoColor=white)](https://www.fastify.io/)
+</div>
 
-ArenaFlow is a real-time Stadium Operations Digital Twin and Incident Command Center Simulator. It is designed to model stadium crowds, track safety indexes, simulate various emergency scenarios, and generate AI-driven mitigation playbooks using the Gemini API.
+<br />
 
-## Problem Statement
+<!-- Hero Image Placeholder -->
+<div align="center">
+  <img src="frontend/public/images/pitch-bg.jpg" alt="ArenaFlow Hero Image" width="800" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"/>
+</div>
+
+<br />
+
+## 📖 Overview
 
 Managing massive crowds, safety incidents, transit delays, and medical emergencies at large-scale venues (like stadiums during major tournaments) is incredibly complex. Standard operating procedures are often static, and operators lack a unified real-time dashboard that bridges telemetry monitoring, scenario simulation, and dynamic response generation. 
 
-ArenaFlow solves this by providing a high-fidelity digital twin dashboard that integrates active telemetry monitoring, timeline scrubbing, simulated incident response, and AI-powered operational advice.
+**ArenaFlow** solves this by providing a high-fidelity digital twin dashboard that integrates active telemetry monitoring, timeline scrubbing, simulated incident response, and AI-powered operational advice using the Gemini API.
 
 ---
 
-## Features
+## ✨ Features
 
 - **Live Digital Twin Map**: Interactive 2D stadium map representing crowd densities and safety levels across multiple gates and seating zones.
 - **Incident Command Center**: View active alerts, execute step-by-step mitigation plans, and coordinate across medical, transit, operations, and security departments.
@@ -21,108 +37,113 @@ ArenaFlow solves this by providing a high-fidelity digital twin dashboard that i
 
 ---
 
-## Tech Stack
+## 🎥 Demo
 
-### Monorepo Workspaces
-- **Frontend**: React (v18), Vite, TypeScript, Tailwind CSS, Framer Motion, Socket.io-client, Lucide Icons.
-- **Backend**: Fastify, TypeScript, Socket.io, dotenv.
-- **Shared**: Common TypeScript type definitions, constants, and utilities.
-
----
-
-## Folder Structure
-
-```text
-ArenaFlow/
-├── backend/                  # Fastify server & simulation engine
-│   ├── src/
-│   │   ├── ai/               # Gemini API Integration
-│   │   ├── simulation/       # Simulation Engine & Scenario configs
-│   │   └── server.ts         # Server entry point
-│   ├── tests/                # Backend simulation test scripts
-│   ├── package.json
-│   └── tsconfig.json
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/       # StadiumMap, Dashboard, Sidebar panels
-│   │   ├── context/          # WebSocket contexts
-│   │   ├── pages/            # View pages (Overview, Digital Twin, etc.)
-│   │   └── main.tsx
-│   ├── tests/                # Frontend component testing
-│   ├── package.json
-│   └── vite.config.ts
-├── shared/                   # Shared types and utility logic
-│   ├── src/
-│   │   ├── constants.ts
-│   │   ├── types.ts
-│   │   └── index.ts
-│   └── package.json
-├── package.json              # Monorepo workspaces configuration
-└── package-lock.json
-```
+<!-- Demo GIF Placeholder -->
+<div align="center">
+  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=Demo+GIF+Coming+Soon" alt="ArenaFlow Demo GIF" width="800" style="border-radius: 12px;"/>
+  <p><em>Watch ArenaFlow in action handling a massive egress scenario.</em></p>
+</div>
 
 ---
 
-## Installation
+## 🏗️ Architecture
+
+ArenaFlow is built as a robust Monorepo encompassing a real-time event-driven Node.js backend and a highly responsive React frontend. 
+
+1. **Simulation Engine (Backend)**: Runs a continuous internal tick-loop generating realistic stadium telemetry (crowd density, gate flow, incidents). 
+2. **WebSocket Gateway**: Streams live telemetry at high frequency (1Hz) to all connected operational clients.
+3. **AI Orchestrator**: Monitors state changes and triggers the Gemini LLM for dynamic playbook generation when incidents occur.
+4. **Command Dashboard (Frontend)**: Consumes WebSocket streams, updating the Digital Twin Map, KPI counters, and AI Copilot timeline smoothly with zero perceived latency.
+
+---
+
+## 💻 Tech Stack
+
+### Frontend
+- **React (v18)** - UI Library
+- **Vite** - Build Tool & Dev Server
+- **TypeScript** - Type Safety
+- **Tailwind CSS** - Utility-first styling
+- **Framer Motion** - Fluid animations and transitions
+- **Socket.io-client** - Real-time WebSocket subscriptions
+
+### Backend
+- **Fastify** - High-performance web framework
+- **Socket.io** - Real-time WebSocket server
+- **TypeScript** - Type Safety
+- **Google Gemini API** - LLM Integration for AI playbooks
+
+---
+
+## 🚀 Installation
 
 Ensure you have [Node.js](https://nodejs.org/) installed (v18+ recommended).
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/YashWagh23/ArenaFlow.git
    cd ArenaFlow
    ```
 
-2. Install dependencies for all workspaces at once:
+2. **Install dependencies for all workspaces at once:**
    ```bash
    npm install
    ```
 
----
+3. **Set Up Environment Variables:**
+   
+   Create a `.env` file in the `backend` folder:
+   ```ini
+   PORT=5000
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+   *(If `GEMINI_API_KEY` is not provided, the server will automatically fall back to mock data, allowing you to use all features offline).*
 
-## Running Locally
+   Create a `.env` file in the `frontend` folder:
+   ```ini
+   VITE_WS_URL=http://localhost:5000
+   ```
 
-To run the application locally:
+4. **Start the Development Servers:**
 
-### 1. Set Up Environment Variables
-Create a `.env` file in the `backend` folder:
-```ini
-PORT=5000
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-*(If `GEMINI_API_KEY` is not provided, the server will automatically fall back to mock data, allowing you to use all features offline).*
+   Run the backend and frontend in separate terminals from the root directory:
 
-Create a `.env` file in the `frontend` folder:
-```ini
-VITE_WS_URL=http://localhost:5000
-```
+   **Start Backend:**
+   ```bash
+   npm run dev:backend
+   ```
 
-### 2. Start the Development Servers
-Run the backend and frontend in separate terminals from the root directory:
+   **Start Frontend:**
+   ```bash
+   npm run dev:frontend
+   ```
 
-**Start Backend:**
-```bash
-npm run dev:backend
-```
-
-**Start Frontend:**
-```bash
-npm run dev:frontend
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## Screenshots Placeholder
+## 🖼️ Screenshots
 
-*Screenshots demonstrating the Stadium Digital Twin, Scenario controls, and AI Briefings panel will be placed here.*
+<div align="center">
+  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=Dashboard+Screenshot" alt="Dashboard" width="400"/>
+  <img src="https://via.placeholder.com/800x450/111111/2E7D32?text=AI+Copilot+Screenshot" alt="AI Copilot" width="400"/>
+</div>
 
 ---
 
-## Future Improvements
+## 🗺️ Roadmap
 
-- **Multi-Stadium Dashboard**: Aggregate data from multiple arenas concurrently for tournament-wide operations.
-- **Enhanced AI Action Execution**: Let the AI automatically suggest and trigger simulation control steps.
-- **High-Fidelity 3D Digital Twin**: Upgrade the 2D Stadium Map to a 3D WebGL/Three.js-powered digital model.
-- **Historical Reporting**: Export post-incident audit reports and performance metrics.
+- [x] High-fidelity 2D Digital Twin Map
+- [x] AI-Generated Incident Playbooks
+- [x] Scenario Simulation Engine (Weather, Transit, Medical)
+- [ ] **Multi-Stadium Dashboard**: Aggregate data from multiple arenas concurrently for tournament-wide operations.
+- [ ] **Enhanced AI Action Execution**: Let the AI automatically suggest and trigger simulation control steps.
+- [ ] **High-Fidelity 3D Digital Twin**: Upgrade the 2D Stadium Map to a 3D WebGL/Three.js-powered digital model.
+- [ ] **Historical Reporting**: Export post-incident audit reports and performance metrics.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
