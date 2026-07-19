@@ -48,25 +48,16 @@ export default function Header({ isMobileMenuOpen, setIsMobileMenuOpen }: { isMo
           style={{ textDecoration: 'none' }}
         >
           {/* Logo mark */}
-          <div
+          <img
+            src="/images/arenaflow-logo.png"
+            alt="ArenaFlow"
             style={{
               width: '20px',
               height: '20px',
-              borderRadius: '5px',
-              background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               flexShrink: 0,
+              objectFit: 'contain',
             }}
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: '12px', color: '#F7F6F1', fontVariationSettings: "'FILL' 1", fontWeight: '700' }}
-            >
-              stadium
-            </span>
-          </div>
+          />
 
           {/* Wordmark */}
           <span

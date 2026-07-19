@@ -139,22 +139,16 @@ function SplashScreen() {
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}
         >
           {/* Logo mark */}
-          <div
+          <img
+            src="/images/arenaflow-logo.png"
+            alt="ArenaFlow Logo"
             style={{
               width: '56px',
               height: '56px',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 40px rgba(46,125,50,0.20), 0 8px 32px rgba(0,0,0,0.40)',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.1)) drop-shadow(0 0 40px rgba(46,125,50,0.2))',
             }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#F7F6F1', fontVariationSettings: "'FILL' 1" }}>
-              stadium
-            </span>
-          </div>
+          />
 
           <div>
             <h1

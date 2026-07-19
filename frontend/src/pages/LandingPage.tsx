@@ -73,9 +73,7 @@ export default function LandingPage() {
         }}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-[5px] flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)' }}>
-            <span className="material-symbols-outlined text-[12px] text-[#F9F9F7]" style={{ fontVariationSettings: "'FILL' 1" }}>stadium</span>
-          </div>
+          <img src="/images/arenaflow-logo.png" alt="ArenaFlow" className="w-5 h-5 object-contain" />
           <span className="font-display font-bold text-[14px] tracking-[-0.025em] text-[#1C1C1C]">ArenaFlow</span>
         </div>
 
@@ -115,7 +113,15 @@ export default function LandingPage() {
 
         <div className="relative z-20 flex flex-col items-center px-6 mt-16" style={{ maxWidth: '800px' }}>
 
-
+          {/* Huge Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="w-20 h-20 mb-8 flex items-center justify-center" 
+          >
+            <img src="/images/arenaflow-logo.png" alt="ArenaFlow Logo" className="w-full h-full object-contain" style={{ filter: 'drop-shadow(0 20px 40px rgba(46,125,50,0.15))' }} />
+          </motion.div>
 
           {/* Eyebrow */}
           <motion.div
